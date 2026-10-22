@@ -677,17 +677,20 @@ document.getElementById('bpm').oninput=e=>{ed.setBpm(+e.target.value);document.g
     if(a.readyState>=1) go(); else a.addEventListener('loadedmetadata',go,{once:true}); }
   function stop(){ layStop(); mxStop(); A.pause(); if(curBtn){ curBtn.classList.remove('on'); curBtn.textContent=curBtn.dataset.lab||'▶ 듣기'; } curBtn=null; }
   function play(btn){ if(curBtn===btn&&!A.paused){ stop(); return; } stop(); if(window.gridStop) window.gridStop(); A.src=btn.dataset.src; A.currentTime=0; setRate(A,btn); var p=A.play(); if(p&&p.catch) p.catch(function(){}); curBtn=btn; btn.classList.add('on'); btn.textContent='■ 멈춤'; }
-  var MX={ac:null,buf:{},src:[],g:{},btn:null,on:{kick:1,snare:1,hat:1,bass:1,keys:1,vocal:1,guitar:1,rgtr:1,toms:1,cym:1}};
-  function mxStop(){ MX.src.forEach(function(s){try{s.stop()}catch(e){}}); MX.src=[]; if(MX.btn){MX.btn.classList.remove('on');MX.btn.textContent=MX.btn.dataset.lab||'▶ 드럼만';} MX.btn=null; }
-  function mxLoad(u){ if(MX.buf[u]) return Promise.resolve(MX.buf[u]); return fetch(u).then(function(r){return r.arrayBuffer()}).then(function(ab){return new Promise(function(ok,no){MX.ac.decodeAudioData(ab,ok,no)})}).then(function(b){MX.buf[u]=b;return b;}); }
-  function mxPlay(btn,set){ if(MX.btn===btn){ mxStop(); return; } stop(); if(window.gridStop) window.gridStop(); if(!MX.ac) MX.ac=new (window.AudioContext||window.webkitAudioContext)(); if(MX.ac.state==='suspended') MX.ac.resume();
-    btn.textContent='불러오는 중…'; var tr=set.tracks;
-    Promise.all(tr.map(function(x){return mxLoad(x[2])})).then(function(bs){ var t=MX.ac.currentTime+.05; var master=MX.ac.createGain(); master.gain.value=.7; master.connect(MX.ac.destination);
+  var MX={ac:null,buf:{},src:[],g:{},btn:null,token:0,on:{kick:1,snare:1,hat:1,bass:1,keys:1,vocal:1,guitar:1,rgtr:1,toms:1,cym:1}};
+  function mxStop(){ MX.token++; MX.src.forEach(function(s){try{if(s.pause)s.pause();else s.stop()}catch(e){}}); MX.src=[]; MX.g={}; if(MX.btn){MX.btn.classList.remove('on');MX.btn.textContent=MX.btn.dataset.lab||'▶ 드럼만';} MX.btn=null; }
+  function mxLoad(u){ if(MX.buf[u]) return Promise.resolve(MX.buf[u]); return fetch(u).then(function(r){if(!r.ok)throw Error('Audio file unavailable');return r.arrayBuffer()}).then(function(ab){return new Promise(function(ok,no){MX.ac.decodeAudioData(ab,ok,no)})}).then(function(b){MX.buf[u]=b;return b;}); }
+  function mxLocal(u){ return new Promise(function(ok,no){ var a=new Audio(); a.preload='auto'; a.oncanplay=function(){a.oncanplay=null;a.onerror=null;ok(a)}; a.onerror=function(){no(Error('Audio file unavailable'))}; a.src=u; a.load(); }); }
+  function mxPlay(btn,set){ if(MX.btn===btn){ mxStop(); return; } stop(); if(window.gridStop) window.gridStop(); var local=location.protocol==='file:'; if(!local){if(!MX.ac) MX.ac=new (window.AudioContext||window.webkitAudioContext)(); if(MX.ac.state==='suspended') MX.ac.resume();}
+    btn.textContent='불러오는 중…'; var tr=set.tracks,token=MX.token;
+    Promise.all(tr.map(function(x){return local?mxLocal(x[2]):mxLoad(x[2])})).then(function(bs){ if(token!==MX.token)return;
+      if(local){ tr.forEach(function(x,i){var a=bs[i],k=x[0];a.volume=MX.on[k] ? .7 : 0;MX.g[k]=a;MX.src.push(a);if(i===0)a.onended=function(){if(MX.btn===btn)mxStop()};}); MX.btn=btn; btn.classList.add('on'); btn.textContent='■ 멈춤'; MX.src.forEach(function(a){var p=a.play();if(p&&p.catch)p.catch(function(){})}); return; }
+      var t=MX.ac.currentTime+.05,master=MX.ac.createGain(); master.gain.value=.7; master.connect(MX.ac.destination);
       tr.forEach(function(x,i){ var k=x[0]; var g=MX.ac.createGain(); g.gain.value=MX.on[k]?1:0; g.connect(master); MX.g[k]=g; var s=MX.ac.createBufferSource(); s.buffer=bs[i]; s.connect(g); s.start(t); if(i===0) s.onended=function(){ if(MX.btn===btn) mxStop(); }; MX.src.push(s); });
-      MX.btn=btn; btn.classList.add('on'); btn.textContent='■ 멈춤'; }).catch(function(){ btn.textContent=set.label; }); }
+      MX.btn=btn; btn.classList.add('on'); btn.textContent='■ 멈춤'; }).catch(function(){ if(token===MX.token)btn.textContent=set.label; }); }
   function mxUI(set,noChips){ var w=document.createElement('span'); w.className='s2mix';
     var b=document.createElement('button'); b.type='button'; b.className='s2p'; b.textContent=set.label; b.dataset.lab=set.label; b.title='분리 음원 · 악기별 켜고 끄기'; b.dataset.mix='1'; b.onclick=function(e){e.preventDefault();e.stopPropagation();mxPlay(b,set);}; w.appendChild(b);
-    set.tracks.forEach(function(p){ if(noChips&&['kick','snare','hat'].indexOf(p[0])>=0) return; var c=document.createElement('button'); c.type='button'; c.className='s2chip '+p[0]+(MX.on[p[0]]?' on':''); c.textContent=p[1]; c.onclick=function(e){e.preventDefault();e.stopPropagation(); MX.on[p[0]]=MX.on[p[0]]?0:1; document.querySelectorAll('.s2chip.'+p[0]).forEach(function(x){x.classList.toggle('on',!!MX.on[p[0]])}); if(MX.g[p[0]]) MX.g[p[0]].gain.setTargetAtTime(MX.on[p[0]]?1:0,MX.ac.currentTime,.01); }; w.appendChild(c); });
+    set.tracks.forEach(function(p){ if(noChips&&['kick','snare','hat'].indexOf(p[0])>=0) return; var c=document.createElement('button'); c.type='button'; c.className='s2chip '+p[0]+(MX.on[p[0]]?' on':''); c.textContent=p[1]; c.onclick=function(e){e.preventDefault();e.stopPropagation(); MX.on[p[0]]=MX.on[p[0]]?0:1; document.querySelectorAll('.s2chip.'+p[0]).forEach(function(x){x.classList.toggle('on',!!MX.on[p[0]])}); if(MX.g[p[0]]){if(MX.g[p[0]].gain)MX.g[p[0]].gain.setTargetAtTime(MX.on[p[0]]?1:0,MX.ac.currentTime,.01);else MX.g[p[0]].volume=MX.on[p[0]] ? .7 : 0;} }; w.appendChild(c); });
     return w; }
   window.s2stop=stop;
   A.addEventListener('ended',stop);

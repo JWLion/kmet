@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><script>/* iPhone 무음 스위치가 켜져 있어도 소리가 나게 */try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}</script><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3교시 소리를 눈으로 읽기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Song+Myung&family=Gaegu:wght@400;700&family=Black+Han+Sans&family=Jua&family=Gothic+A1:wght@700;800;900&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#1b1b1b;--ink-2:#4a4a4a;--ink-3:#8a8a8a;--line:#dedad0;--accent:#b23b3b;--low:#e8743b;--mid:#3fa36b;--high:#4c8dff;--A:#c04bd6;--B:#1f9e89;--C:#e0a100}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.65}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+@media(max-width:640px){.wrap{padding:0 16px}}
+.band{background:#1b1b1b;color:#f4f1ea;padding:56px 0 44px}
+.band .mono{color:#bfae86}
+.band .mono.kmet{display:inline-block;color:#f4f1ea;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 12px;margin:0 0 10px}
+.homelink{display:inline-block;margin-bottom:14px;font-size:.85rem;font-weight:700;color:#fff;text-decoration:none;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 14px}
+h1{font-family:"Song Myung",serif;font-weight:400;font-size:clamp(1.9rem,5vw,2.6rem);margin:6px 0 10px;letter-spacing:-.01em;line-height:1.3}
+.band p{max-width:72ch;color:#d9d4c7;margin:0}
+.mono{font-family:"IBM Plex Mono",monospace;font-size:.8rem;letter-spacing:.04em}
+section{padding:40px 0 8px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;border-bottom:1px solid var(--ink);padding-bottom:10px;margin-bottom:18px}
+.sec-head h2{font-family:"Song Myung",serif;font-weight:400;font-size:1.5rem;margin:0}
+.sec-head .mono{color:var(--ink-3)}
+.lead{max-width:78ch;color:var(--ink-2)}
+.note{font-size:.86rem;color:var(--ink-2)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.callout{border-left:4px solid var(--accent);background:#fff7f5;padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0}
+.def{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px 16px;position:relative}
+.def .en{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--ink-3)}
+.def h3{margin:2px 0 8px;font-size:1.25rem}
+.def .is{font-size:1.02rem;background:linear-gradient(transparent 60%,#ffe9a8 60%);display:inline}
+.def dl{display:grid;grid-template-columns:96px 1fr;gap:6px 12px;margin:14px 0 0;font-size:.92rem}
+.def dt{font-weight:700;color:var(--ink-2)}.def dd{margin:0}
+.def svg{width:100%;height:auto;display:block;margin:12px 0 4px;background:#fbfaf6;border:1px solid var(--line);border-radius:10px}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line)}
+table.t th{background:#f0ede5;text-align:left;padding:10px 12px;font-weight:700;border-bottom:1px solid var(--line)}
+table.t td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+.tscroll{overflow-x:auto;border-radius:12px}
+.ok{color:#2e7d4f;font-weight:700}.no{color:#b23b3b;font-weight:700}
+/* doodle cards */
+.doodle{position:relative;background:#fbfaf6;border:3px solid #141414;border-radius:6px 14px 8px 12px/12px 6px 14px 8px;box-shadow:7px 7px 0 -3px #fbfaf6,7px 7px 0 0 #141414;padding:0 0 14px;transform:rotate(-.5deg)}
+.doodle:nth-child(2n){transform:rotate(.5deg)}
+.dd-bar{height:22px;border-bottom:3px solid #141414;background:repeating-linear-gradient(-20deg,transparent 0 9px,rgba(0,0,0,.05) 9px 11px)}
+.dd-body{padding:10px 16px 0}
+.dd-t{display:block;font-family:"Gaegu","Noto Sans KR",sans-serif;font-weight:700;font-size:1.6rem;line-height:1.2}
+.dd-body p{margin:6px 0 0;font-family:"Gaegu","Noto Sans KR",sans-serif;font-weight:700;font-size:1.22rem;line-height:1.4}
+.dd-body p b{background:linear-gradient(transparent 55%,#ffe066 55%)}
+.dd-pic{height:64px;margin:10px 16px 0;border-radius:8px;background:#1a0a2a;position:relative;overflow:hidden}
+/* song cards */
+.song{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:0 0 22px;border-top:6px solid var(--c)}
+.song .top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.song .lab{font-family:"Song Myung",serif;font-size:1.7rem;line-height:1;color:var(--c)}
+.song audio{flex:1;min-width:240px;height:40px}
+.song .title{display:none;font-weight:700;background:#fff7d6;border:1px solid #f0d27a;border-radius:999px;padding:3px 14px}
+.song.show-title .title{display:inline-block}
+.song .qs{margin:12px 0 4px;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-size:.92rem}
+@media(max-width:900px){.song .qs{grid-template-columns:1fr}}
+.song .qs li::before{content:"Q ";font-family:"IBM Plex Mono",monospace;font-weight:600;color:var(--c)}
+.figs{display:grid;gap:12px;margin-top:12px}
+.figs figure{margin:0}
+.figs img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:#fff}
+.figs .pair{display:grid;gap:8px}
+.figs .tag2{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.74rem;font-weight:600;border-radius:999px;padding:2px 10px;margin:0 0 4px}
+.figs .tag2.r{background:#eee;color:#555}.figs .tag2.a{background:#fff3b0;color:#7a5c00}
+.figs figcaption{font-size:.8rem;color:var(--ink-3);margin-top:4px}
+/* compare table hidden answers */
+.cmp td.a span{visibility:hidden}
+.cmp.show-ans td.a span{visibility:visible}
+.cmp td.a{min-width:150px;background:repeating-linear-gradient(-45deg,#fff 0 8px,#faf7ef 8px 10px)}
+.cmp.show-ans td.a{background:#fff}
+.chip{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:900px){.steps{grid-template-columns:1fr}}
+.step{display:grid;grid-template-columns:40px 1fr;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px 12px}
+.step .n{font-family:"Song Myung",serif;font-size:1.9rem;line-height:1;color:var(--ink-3)}
+.step b{display:block;margin-bottom:4px}
+.step p{margin:0;font-size:.9rem;color:var(--ink-2)}
+details.box{margin:14px 0 0;border:1px dashed #b9b3a4;border-radius:10px;padding:10px 16px;background:#fbfaf6}
+details.box summary{cursor:pointer;font-weight:700;color:var(--accent)}
+pre{background:#1e1e1e;color:#e8e6df;border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.55}
+pre .c{color:#8fbf7f}
+.use{display:grid;grid-template-columns:44px 1fr;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.use .ic{font-size:1.6rem;line-height:1}
+.use b{display:block}.use p{margin:4px 0 0;font-size:.9rem;color:var(--ink-2)}
+.src{font-size:.82rem;color:var(--ink-3)}
+ol.refs{font-size:.86rem;color:var(--ink-2);padding-left:1.2em}
+ol.refs li{margin:4px 0}
+.bigimg img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px;background:#fff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.tabs button{font:inherit;font-size:.88rem;font-weight:700;border:1.5px solid var(--ink);background:#fff;border-radius:999px;padding:5px 14px;cursor:pointer}
+.tabs button.on{background:var(--ink);color:#fff}
+footer{padding:40px 0 60px;color:var(--ink-3);font-size:.8rem}
+/* faint music art only in the side margins (outside the content column) */
+body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:max(0px,calc((100vw - 1180px)/2 - 14px));z-index:-1;pointer-events:none;opacity:.15;background-repeat:no-repeat;background-size:auto 100%}body::before{left:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='1000' viewBox='0 0 260 1000'%3E%3Crect x='0' y='10' width='18' height='7' rx='3.5' fill='%23b926ff'/%3E%3Crect x='0' y='24' width='8' height='7' rx='3.5' fill='%23ab26ff'/%3E%3Crect x='0' y='38' width='12' height='7' rx='3.5' fill='%239c26ff'/%3E%3Crect x='0' y='52' width='8' height='7' rx='3.5' fill='%238e26ff'/%3E%3Crect x='0' y='66' width='110' height='7' rx='3.5' fill='%237f26ff'/%3E%3Crect x='0' y='80' width='12' height='7' rx='3.5' fill='%237126ff'/%3E%3Crect x='0' y='94' width='12' height='7' rx='3.5' fill='%236226ff'/%3E%3Crect x='0' y='108' width='62' height='7' rx='3.5' fill='%235426ff'/%3E%3Crect x='0' y='122' width='12' height='7' rx='3.5' fill='%234526ff'/%3E%3Crect x='0' y='136' width='110' height='7' rx='3.5' fill='%233726ff'/%3E%3Crect x='0' y='150' width='8' height='7' rx='3.5' fill='%232826ff'/%3E%3Crect x='0' y='164' width='62' height='7' rx='3.5' fill='%232632ff'/%3E%3Crect x='0' y='178' width='26' height='7' rx='3.5' fill='%232640ff'/%3E%3Crect x='0' y='192' width='18' height='7' rx='3.5' fill='%23264fff'/%3E%3Crect x='0' y='206' width='18' height='7' rx='3.5' fill='%23265dff'/%3E%3Crect x='0' y='220' width='34' height='7' rx='3.5' fill='%23266cff'/%3E%3Crect x='0' y='234' width='18' height='7' rx='3.5' fill='%23267aff'/%3E%3Crect x='0' y='248' width='26' height='7' rx='3.5' fill='%232689ff'/%3E%3Crect x='0' y='262' width='12' height='7' rx='3.5' fill='%232697ff'/%3E%3Crect x='0' y='276' width='26' height='7' rx='3.5' fill='%2326a6ff'/%3E%3Crect x='0' y='290' width='62' height='7' rx='3.5' fill='%2326b4ff'/%3E%3Crect x='0' y='304' width='80' height='7' rx='3.5' fill='%2326c3ff'/%3E%3Crect x='0' y='318' width='80' height='7' rx='3.5' fill='%2326d1ff'/%3E%3Crect x='0' y='332' width='26' height='7' rx='3.5' fill='%2326e0ff'/%3E%3Crect x='0' y='346' width='26' height='7' rx='3.5' fill='%2326eeff'/%3E%3Crect x='0' y='360' width='34' height='7' rx='3.5' fill='%2326fdff'/%3E%3Crect x='0' y='374' width='48' height='7' rx='3.5' fill='%2326fff2'/%3E%3Crect x='0' y='388' width='34' height='7' rx='3.5' fill='%2326ffe3'/%3E%3Crect x='0' y='402' width='12' height='7' rx='3.5' fill='%2326ffd5'/%3E%3Crect x='0' y='416' width='62' height='7' rx='3.5' fill='%2326ffc6'/%3E%3Crect x='0' y='430' width='48' height='7' rx='3.5' fill='%2326ffb8'/%3E%3Crect x='0' y='444' width='80' height='7' rx='3.5' fill='%2326ffa9'/%3E%3Crect x='0' y='458' width='12' height='7' rx='3.5' fill='%2326ff9b'/%3E%3Crect x='0' y='472' width='48' height='7' rx='3.5' fill='%2326ff8c'/%3E%3Crect x='0' y='486' width='48' height='7' rx='3.5' fill='%2326ff7e'/%3E%3Crect x='0' y='500' width='80' height='7' rx='3.5' fill='%2326ff6f'/%3E%3Crect x='0' y='514' width='12' height='7' rx='3.5' fill='%2326ff61'/%3E%3Crect x='0' y='528' width='110' height='7' rx='3.5' fill='%2326ff52'/%3E%3Crect x='0' y='542' width='12' height='7' rx='3.5' fill='%2326ff44'/%3E%3Crect x='0' y='556' width='34' height='7' rx='3.5' fill='%2326ff35'/%3E%3Crect x='0' y='570' width='80' height='7' rx='3.5' fill='%2326ff27'/%3E%3Crect x='0' y='584' width='62' height='7' rx='3.5' fill='%2333ff26'/%3E%3Crect x='0' y='598' width='48' height='7' rx='3.5' fill='%2341ff26'/%3E%3Crect x='0' y='612' width='80' height='7' rx='3.5' fill='%2350ff26'/%3E%3Crect x='0' y='626' width='12' height='7' rx='3.5' fill='%235eff26'/%3E%3Crect x='0' y='640' width='26' height='7' rx='3.5' fill='%236dff26'/%3E%3Crect x='0' y='654' width='18' height='7' rx='3.5' fill='%237bff26'/%3E%3Crect x='0' y='668' width='62' height='7' rx='3.5' fill='%238aff26'/%3E%3Crect x='0' y='682' width='80' height='7' rx='3.5' fill='%2398ff26'/%3E%3Crect x='0' y='696' width='80' height='7' rx='3.5' fill='%23a7ff26'/%3E%3Crect x='0' y='710' width='34' height='7' rx='3.5' fill='%23b5ff26'/%3E%3Crect x='0' y='724' width='62' height='7' rx='3.5' fill='%23c4ff26'/%3E%3Crect x='0' y='738' width='34' height='7' rx='3.5' fill='%23d2ff26'/%3E%3Crect x='0' y='752' width='48' height='7' rx='3.5' fill='%23e1ff26'/%3E%3Crect x='0' y='766' width='62' height='7' rx='3.5' fill='%23efff26'/%3E%3Crect x='0' y='780' width='110' height='7' rx='3.5' fill='%23feff26'/%3E%3Crect x='0' y='794' width='18' height='7' rx='3.5' fill='%23fff126'/%3E%3Crect x='0' y='808' width='26' height='7' rx='3.5' fill='%23ffe226'/%3E%3Crect x='0' y='822' width='18' height='7' rx='3.5' fill='%23ffd426'/%3E%3Crect x='0' y='836' width='8' height='7' rx='3.5' fill='%23ffc526'/%3E%3Crect x='0' y='850' width='48' height='7' rx='3.5' fill='%23ffb726'/%3E%3Crect x='0' y='864' width='48' height='7' rx='3.5' fill='%23ffa826'/%3E%3Crect x='0' y='878' width='110' height='7' rx='3.5' fill='%23ff9a26'/%3E%3Crect x='0' y='892' width='8' height='7' rx='3.5' fill='%23ff8b26'/%3E%3Crect x='0' y='906' width='62' height='7' rx='3.5' fill='%23ff7d26'/%3E%3Crect x='0' y='920' width='62' height='7' rx='3.5' fill='%23ff6e26'/%3E%3Crect x='0' y='934' width='62' height='7' rx='3.5' fill='%23ff6026'/%3E%3Crect x='0' y='948' width='12' height='7' rx='3.5' fill='%23ff5126'/%3E%3Crect x='0' y='962' width='110' height='7' rx='3.5' fill='%23ff4326'/%3E%3Crect x='0' y='976' width='12' height='7' rx='3.5' fill='%23ff3426'/%3E%3Cg transform='translate(60,150)' fill='none' stroke='%234b3aa8' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='80' cy='50' r='30'/%3E%3Cpath d='M46 52a34 34 0 0 1 68 0'/%3E%3Crect x='40' y='48' width='12' height='22' rx='5'/%3E%3Crect x='108' y='48' width='12' height='22' rx='5'/%3E%3Cpath d='M30 160c0-40 20-66 50-66s50 26 50 66'/%3E%3Cpath d='M50 120l-30 40M110 120l30 40'/%3E%3Crect x='-10' y='160' width='180' height='50' rx='8'/%3E%3Ccircle cx='35' cy='185' r='16'/%3E%3Ccircle cx='125' cy='185' r='16'/%3E%3Cpath d='M70 172v26M80 172v26M90 172v26'/%3E%3C/g%3E%3Cdefs%3E%3ClinearGradient id='cdg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23c58bff'/%3E%3Cstop offset='.35' stop-color='%237fe7ff'/%3E%3Cstop offset='.6' stop-color='%23ff8bd8'/%3E%3Cstop offset='1' stop-color='%238b7bff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='140' cy='640' r='80' fill='url(%23cdg)'/%3E%3Ccircle cx='140' cy='640' r='25.6' fill='%23ffffff' fill-opacity='.7'/%3E%3Ccircle cx='140' cy='640' r='9.6' fill='%23f3eefc'/%3E%3Cpath d='M76.0 616.0A68.0 68.0 0 0 1 156.0 576.0' stroke='%23fff' stroke-opacity='.7' stroke-width='6' fill='none'/%3E%3Cpath transform='translate(200,90) scale(1)' d='M0-14 3-3 14 0 3 3 0 14-3 3-14 0-3-3z' fill='%23b9a4ff'/%3E%3Cpath transform='translate(70,470) scale(0.8)' d='M0-14 3-3 14 0 3 3 0 14-3 3-14 0-3-3z' fill='%23b9a4ff'/%3E%3Cpath transform='translate(210,880) scale(1.1)' d='M0-14 3-3 14 0 3 3 0 14-3 3-14 0-3-3z' fill='%23b9a4ff'/%3E%3C/svg%3E");background-position:left center}body::after{right:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='1000' viewBox='0 0 260 1000'%3E%3Crect x='252' y='10' width='8' height='7' rx='3.5' fill='%23b926ff'/%3E%3Crect x='242' y='24' width='18' height='7' rx='3.5' fill='%23ab26ff'/%3E%3Crect x='212' y='38' width='48' height='7' rx='3.5' fill='%239c26ff'/%3E%3Crect x='248' y='52' width='12' height='7' rx='3.5' fill='%238e26ff'/%3E%3Crect x='198' y='66' width='62' height='7' rx='3.5' fill='%237f26ff'/%3E%3Crect x='226' y='80' width='34' height='7' rx='3.5' fill='%237126ff'/%3E%3Crect x='150' y='94' width='110' height='7' rx='3.5' fill='%236226ff'/%3E%3Crect x='180' y='108' width='80' height='7' rx='3.5' fill='%235426ff'/%3E%3Crect x='180' y='122' width='80' height='7' rx='3.5' fill='%234526ff'/%3E%3Crect x='150' y='136' width='110' height='7' rx='3.5' fill='%233726ff'/%3E%3Crect x='180' y='150' width='80' height='7' rx='3.5' fill='%232826ff'/%3E%3Crect x='242' y='164' width='18' height='7' rx='3.5' fill='%232632ff'/%3E%3Crect x='212' y='178' width='48' height='7' rx='3.5' fill='%232640ff'/%3E%3Crect x='180' y='192' width='80' height='7' rx='3.5' fill='%23264fff'/%3E%3Crect x='242' y='206' width='18' height='7' rx='3.5' fill='%23265dff'/%3E%3Crect x='234' y='220' width='26' height='7' rx='3.5' fill='%23266cff'/%3E%3Crect x='150' y='234' width='110' height='7' rx='3.5' fill='%23267aff'/%3E%3Crect x='242' y='248' width='18' height='7' rx='3.5' fill='%232689ff'/%3E%3Crect x='252' y='262' width='8' height='7' rx='3.5' fill='%232697ff'/%3E%3Crect x='226' y='276' width='34' height='7' rx='3.5' fill='%2326a6ff'/%3E%3Crect x='150' y='290' width='110' height='7' rx='3.5' fill='%2326b4ff'/%3E%3Crect x='226' y='304' width='34' height='7' rx='3.5' fill='%2326c3ff'/%3E%3Crect x='242' y='318' width='18' height='7' rx='3.5' fill='%2326d1ff'/%3E%3Crect x='234' y='332' width='26' height='7' rx='3.5' fill='%2326e0ff'/%3E%3Crect x='212' y='346' width='48' height='7' rx='3.5' fill='%2326eeff'/%3E%3Crect x='234' y='360' width='26' height='7' rx='3.5' fill='%2326fdff'/%3E%3Crect x='198' y='374' width='62' height='7' rx='3.5' fill='%2326fff2'/%3E%3Crect x='234' y='388' width='26' height='7' rx='3.5' fill='%2326ffe3'/%3E%3Crect x='180' y='402' width='80' height='7' rx='3.5' fill='%2326ffd5'/%3E%3Crect x='252' y='416' width='8' height='7' rx='3.5' fill='%2326ffc6'/%3E%3Crect x='150' y='430' width='110' height='7' rx='3.5' fill='%2326ffb8'/%3E%3Crect x='180' y='444' width='80' height='7' rx='3.5' fill='%2326ffa9'/%3E%3Crect x='212' y='458' width='48' height='7' rx='3.5' fill='%2326ff9b'/%3E%3Crect x='212' y='472' width='48' height='7' rx='3.5' fill='%2326ff8c'/%3E%3Crect x='150' y='486' width='110' height='7' rx='3.5' fill='%2326ff7e'/%3E%3Crect x='234' y='500' width='26' height='7' rx='3.5' fill='%2326ff6f'/%3E%3Crect x='180' y='514' width='80' height='7' rx='3.5' fill='%2326ff61'/%3E%3Crect x='234' y='528' width='26' height='7' rx='3.5' fill='%2326ff52'/%3E%3Crect x='252' y='542' width='8' height='7' rx='3.5' fill='%2326ff44'/%3E%3Crect x='212' y='556' width='48' height='7' rx='3.5' fill='%2326ff35'/%3E%3Crect x='248' y='570' width='12' height='7' rx='3.5' fill='%2326ff27'/%3E%3Crect x='248' y='584' width='12' height='7' rx='3.5' fill='%2333ff26'/%3E%3Crect x='150' y='598' width='110' height='7' rx='3.5' fill='%2341ff26'/%3E%3Crect x='234' y='612' width='26' height='7' rx='3.5' fill='%2350ff26'/%3E%3Crect x='242' y='626' width='18' height='7' rx='3.5' fill='%235eff26'/%3E%3Crect x='212' y='640' width='48' height='7' rx='3.5' fill='%236dff26'/%3E%3Crect x='198' y='654' width='62' height='7' rx='3.5' fill='%237bff26'/%3E%3Crect x='248' y='668' width='12' height='7' rx='3.5' fill='%238aff26'/%3E%3Crect x='242' y='682' width='18' height='7' rx='3.5' fill='%2398ff26'/%3E%3Crect x='150' y='696' width='110' height='7' rx='3.5' fill='%23a7ff26'/%3E%3Crect x='180' y='710' width='80' height='7' rx='3.5' fill='%23b5ff26'/%3E%3Crect x='242' y='724' width='18' height='7' rx='3.5' fill='%23c4ff26'/%3E%3Crect x='180' y='738' width='80' height='7' rx='3.5' fill='%23d2ff26'/%3E%3Crect x='212' y='752' width='48' height='7' rx='3.5' fill='%23e1ff26'/%3E%3Crect x='242' y='766' width='18' height='7' rx='3.5' fill='%23efff26'/%3E%3Crect x='248' y='780' width='12' height='7' rx='3.5' fill='%23feff26'/%3E%3Crect x='242' y='794' width='18' height='7' rx='3.5' fill='%23fff126'/%3E%3Crect x='234' y='808' width='26' height='7' rx='3.5' fill='%23ffe226'/%3E%3Crect x='234' y='822' width='26' height='7' rx='3.5' fill='%23ffd426'/%3E%3Crect x='234' y='836' width='26' height='7' rx='3.5' fill='%23ffc526'/%3E%3Crect x='234' y='850' width='26' height='7' rx='3.5' fill='%23ffb726'/%3E%3Crect x='212' y='864' width='48' height='7' rx='3.5' fill='%23ffa826'/%3E%3Crect x='198' y='878' width='62' height='7' rx='3.5' fill='%23ff9a26'/%3E%3Crect x='252' y='892' width='8' height='7' rx='3.5' fill='%23ff8b26'/%3E%3Crect x='150' y='906' width='110' height='7' rx='3.5' fill='%23ff7d26'/%3E%3Crect x='180' y='920' width='80' height='7' rx='3.5' fill='%23ff6e26'/%3E%3Crect x='198' y='934' width='62' height='7' rx='3.5' fill='%23ff6026'/%3E%3Crect x='242' y='948' width='18' height='7' rx='3.5' fill='%23ff5126'/%3E%3Crect x='252' y='962' width='8' height='7' rx='3.5' fill='%23ff4326'/%3E%3Crect x='242' y='976' width='18' height='7' rx='3.5' fill='%23ff3426'/%3E%3Cg transform='translate(40,140)' fill='%234b3aa8' stroke='%234b3aa8' stroke-linecap='round'%3E%3Cg stroke-width='13'%3E%3Cpath d='M40 62v58M40 78l-30 22M40 78l26-34M40 120l-16 60M40 120l18 60'/%3E%3Cpath d='M110 50v66M110 66l-28-30M110 66l28-30M110 116l-22 62M110 116l22 62'/%3E%3Cpath d='M180 62v58M180 78l-26-34M180 78l30 22M180 120l-18 60M180 120l16 60'/%3E%3C/g%3E%3Ccircle cx='40' cy='34' r='17'/%3E%3Ccircle cx='110' cy='22' r='17'/%3E%3Ccircle cx='180' cy='34' r='17'/%3E%3C/g%3E%3Cg transform='translate(70,560)' fill='none' stroke='%234b3aa8' stroke-width='5' stroke-linecap='round'%3E%3Cpath d='M10 90a60 60 0 0 1 120 0'/%3E%3Crect x='0' y='80' width='28' height='52' rx='10'/%3E%3Crect x='112' y='80' width='28' height='52' rx='10'/%3E%3C/g%3E%3Cg transform='translate(110,780)' fill='none' stroke='%234b3aa8' stroke-width='5' stroke-linecap='round'%3E%3Crect x='0' y='0' width='34' height='62' rx='17'/%3E%3Cpath d='M-12 38a29 29 0 0 0 58 0M17 70v34M0 104h34'/%3E%3C/g%3E%3Cpath transform='translate(60,80) scale(1)' d='M0-14 3-3 14 0 3 3 0 14-3 3-14 0-3-3z' fill='%23b9a4ff'/%3E%3Cpath transform='translate(190,500) scale(0.8)' d='M0-14 3-3 14 0 3 3 0 14-3 3-14 0-3-3z' fill='%23b9a4ff'/%3E%3Cpath transform='translate(60,920) scale(1.1)' d='M0-14 3-3 14 0 3 3 0 14-3 3-14 0-3-3z' fill='%23b9a4ff'/%3E%3C/svg%3E");background-position:right center}
+.dd-bar{height:24px;display:flex;justify-content:flex-end;align-items:center;padding:0 8px}
+.dd-bar span{font:700 15px/1 "Gaegu",sans-serif}
+.wm{position:fixed;top:50%;z-index:0;pointer-events:none;user-select:none;font-family:"Black Han Sans","Noto Sans KR",sans-serif;font-weight:900;font-size:clamp(80px,8.5vw,150px);line-height:.9;color:#b9a8e6;opacity:.13;letter-spacing:-.02em;white-space:nowrap}.wm.l{left:calc(-1 * clamp(80px,8.5vw,150px) * 1.0);transform:translateY(-50%) rotate(-90deg)}.wm.r{right:calc(-1 * clamp(80px,8.5vw,150px) * 1.0);transform:translateY(-50%) rotate(90deg)}@media print{.wm{display:none}}@media (max-width:900px){.wm{display:none}}
+</style></head>
+<body><div class="wm l" aria-hidden="true">EDUPROP</div><div class="wm r" aria-hidden="true">EDUPROP</div>
+<div class="band"><div class="wrap"><a class="homelink" href="../index.html">← 첫 화면(플레이어)으로</a>
+  <div class="mono kmet">2026 한국음악교육공학회(KMET) 교사 연수 · 10월 24일(토) · 강사 김서희(연세대 글로벌인재학부)</div>
+  <div class="mono">3교시 · 오디오 분석 — 파형과 스펙트로그램</div>
+  <h1>소리를 눈으로 읽는다 — 파형과 스펙트로그램</h1>
+  <p>귀로 들은 차이를 그림으로 확인하는 수업입니다. 곡 이름은 숨기고 먼저 들은 뒤, 파형과 스펙트로그램에서 <b>"어디가 어떻게 다른가"</b>를 근거로 말해 봅니다.</p>
+</div></div>
+
+<main class="wrap">
+
+<!-- 0 -->
+<section>
+  <div class="sec-head"><h2>0. 오늘의 질문</h2><span class="mono">도입 · 2분</span></div>
+  <div class="callout"><b>"이 노래는 꽉 차게 들린다", "저 노래는 비어 있게 들린다."</b><br>이 느낌을 그림으로 보여 줄 수 있을까? — 오늘은 소리를 <b>크기의 그림(파형)</b>과 <b>높이의 그림(스펙트로그램)</b>으로 바꿔 읽는다.</div>
+</section>
+
+<!-- 1 -->
+<section>
+  <div class="sec-head"><h2>1. 개념 정의</h2><span class="mono">소리 → 파형 → 스펙트로그램 · 8분</span></div>
+
+  <div class="grid3">
+    <div class="def">
+      <span class="en">Sound</span><h3>소리</h3>
+      <p class="is">공기의 압력이 빠르게 오르내리는 진동</p>
+      <dl>
+        <dt>주파수(Hz)</dt><dd>1초에 몇 번 진동하나 → <b>음높이</b>. 많을수록 높은 소리. 사람의 귀는 대략 20Hz~20kHz를 들음</dd>
+        <dt>진폭</dt><dd>진동의 폭 → <b>크기</b></dd>
+        <dt>배음 구성</dt><dd>기본음 위에 함께 울리는 높은 성분들의 세기 → <b>음색</b>의 주요 요인. 소리가 시작·소멸하는 모양(어택·감쇠)도 음색에 영향을 줌. 같은 '라'(440Hz)라도 피아노와 기타가 다르게 들리는 까닭</dd>
+      </dl>
+      <p class="src">Rossing, Moore, &amp; Wheeler (2002)</p>
+    </div>
+
+    <div class="def">
+      <span class="en">Waveform</span><h3>파형</h3>
+      <p class="is">시간에 따라 소리의 크기(진폭)가 어떻게 변하는지 그린 그래프</p>
+      <svg viewBox="0 0 300 120" aria-label="파형 축 설명"><line x1="30" y1="60" x2="290" y2="60" stroke="#999"/><line x1="30" y1="10" x2="30" y2="110" stroke="#333"/><path d="M40 60 L44 18 L48 100 L52 30 L56 88 L62 45 L70 72 L80 55 L95 62 L100 60" fill="none" stroke="#2b6cb0" stroke-width="2"/><path d="M110 60 L114 22 L118 98 L122 34 L126 84 L132 48 L140 70 L150 57 L165 62 L170 60" fill="none" stroke="#2b6cb0" stroke-width="2"/><path d="M185 60 L188 14 L191 104 L194 16 L197 102 L200 15 L203 104 L206 16 L209 103 L212 15 L215 104 L218 16 L221 103 L224 15 L227 104 L230 16 L233 102 L236 15 L239 103 L242 16 L245 104 L248 15 L251 103 L254 16 L257 104 L260 15 L263 103 L266 16 L269 104 L272 15 L275 103 L280 60" fill="none" stroke="#2b6cb0" stroke-width="2"/><text x="290" y="76" font-size="11" text-anchor="end" fill="#555">시간 →</text><text x="34" y="14" font-size="11" fill="#555">크기</text><text x="105" y="116" font-size="10" fill="#b23b3b" text-anchor="middle">띄엄띄엄</text><text x="232" y="116" font-size="10" fill="#b23b3b" text-anchor="middle">꽉 찬 덩어리</text></svg>
+      <dl>
+        <dt>가로축</dt><dd>시간(초)</dd>
+        <dt>세로축</dt><dd>진폭. 디지털 최대치를 1로 놓고 −1~1로 표시</dd>
+        <dt>알 수 있는 것</dt><dd>언제 크고 작은가, 소리가 시작되는 순간(어택), 줄어드는 모양(감쇠), 구간이 바뀌는 곳</dd>
+        <dt>알기 어려운 것</dt><dd>30초처럼 넓게 볼 때는 어떤 음높이인지, 어떤 악기인지 알기 어려움</dd>
+      </dl>
+    </div>
+
+    <div class="def">
+      <span class="en">Spectrogram</span><h3>스펙트로그램</h3>
+      <p class="is">소리를 아주 짧은 조각으로 잘라, 조각마다 어떤 높이의 성분이 얼마나 센지 색으로 그린 그림</p>
+      <svg viewBox="0 0 300 120" aria-label="스펙트로그램 축 설명"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2a0b3d"/><stop offset="1" stop-color="#5a1a5e"/></linearGradient></defs><rect x="30" y="10" width="260" height="96" fill="url(#g)"/><g fill="#ffd27a"><rect x="40" y="88" width="16" height="14"/><rect x="100" y="88" width="16" height="14"/><rect x="160" y="88" width="16" height="14"/><rect x="220" y="88" width="16" height="14"/></g><g fill="#f08a4b"><rect x="70" y="58" width="60" height="4"/><rect x="70" y="44" width="60" height="3"/><rect x="70" y="34" width="60" height="2"/></g><path d="M150 60 q10 -12 20 0 t20 0 t20 0" fill="none" stroke="#ffb36b" stroke-width="3"/><rect x="250" y="12" width="4" height="92" fill="#ffe1a8"/><text x="290" y="118" font-size="11" text-anchor="end" fill="#555">시간 →</text><text x="4" y="20" font-size="10" fill="#555">높음</text><text x="4" y="104" font-size="10" fill="#555">낮음</text></svg>
+      <dl>
+        <dt>가로축</dt><dd>시간(초)</dd>
+        <dt>세로축</dt><dd>주파수(Hz) = 음높이. 아래가 저음, 위가 고음</dd>
+        <dt>색</dt><dd>그 높이 성분의 세기(dB). 밝을수록 셈</dd>
+        <dt>원리</dt><dd>짧은 구간 푸리에 변환(STFT): 짧은 조각마다 소리를 주파수 성분으로 나눔</dd>
+      </dl>
+      <p class="src">Müller (2021), 2장</p>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:18px">
+    <div class="card">
+      <b>세로축이 '로그 눈금'인 이유</b>
+      <p class="note" style="margin:6px 0 0">64 → 128 → 256 → 512…처럼 <b>두 배가 될 때마다 같은 간격</b>으로 그림. 주파수가 두 배 = 한 옥타브 위이므로, 건반처럼 옥타브가 같은 간격으로 보인다. 일반 눈금이면 저음 쪽이 바닥의 좁은 띠로 눌려 보인다.</p>
+    </div>
+    <div class="card">
+      <b>dB(데시벨)과 색</b>
+      <p class="note" style="margin:6px 0 0">오늘 그림의 0dB는 <b>그 곡에서 가장 센 성분</b>이다. −80dB에 가까울수록 검정. 곡마다 자기 최댓값을 기준으로 그렸으므로, <b>곡끼리 "어느 곡이 더 크다"를 비교하는 데는 쓰지 않는다.</b> 한 곡 안에서 어디가 밝은지를 본다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <div class="sec-head"><h2>2. 스펙트로그램에서 읽는 네 가지 모양</h2><span class="mono">그림 문법 · 4분</span></div>
+  <div class="grid4">
+    <div class="doodle"><div class="dd-bar"><span>✕</span></div><div class="dd-pic"><svg viewBox="0 0 200 64" width="100%" height="64"><g fill="#f5a35b"><rect x="10" y="40" width="180" height="5"/><rect x="10" y="26" width="180" height="4"/><rect x="10" y="16" width="180" height="3"/></g></svg></div><div class="dd-body"><b class="dd-t">가로줄</b><p>한 높이가 <b>계속 울림</b>. 여러 줄이 위로 갈수록 촘촘하게 겹치면 기본음 + 배음</p></div></div>
+    <div class="doodle"><div class="dd-bar"><span>✕</span></div><div class="dd-pic"><svg viewBox="0 0 200 64" width="100%" height="64"><g fill="#ffe1a8"><rect x="30" y="4" width="4" height="58"/><rect x="80" y="4" width="4" height="58"/><rect x="130" y="4" width="4" height="58"/><rect x="180" y="4" width="4" height="58"/></g></svg></div><div class="dd-body"><b class="dd-t">세로줄</b><p>아주 짧은 순간 <b>여러 높이가 한꺼번에</b>. 소리가 <b>짧고 갑작스러울수록</b> 높이가 넓게 퍼짐 → 드럼·손뼉처럼 치는 소리</p></div></div>
+    <div class="doodle"><div class="dd-bar"><span>✕</span></div><div class="dd-pic"><svg viewBox="0 0 200 64" width="100%" height="64"><path d="M10 40 q15 -18 30 0 t30 0 t30 -10 t30 6 t30 -8 t30 4" fill="none" stroke="#ffb36b" stroke-width="4"/></svg></div><div class="dd-body"><b class="dd-t">곡선·물결</b><p><b>음높이가 움직임</b> → 예: 노래 선율, 비브라토, 미끄러지는 음</p></div></div>
+    <div class="doodle"><div class="dd-bar"><span>✕</span></div><div class="dd-pic" style="background:radial-gradient(circle at 30% 30%,#7a3a8a 0 2px,transparent 3px) 0 0/7px 7px,radial-gradient(circle at 60% 70%,#9a4a7a 0 1.5px,transparent 2.5px) 0 0/5px 5px,#2a0b3d"></div><div class="dd-body"><b class="dd-t">넓게 번진 영역</b><p>높이가 정해지지 않은 <b>잡음 성분</b> → 예: 심벌, 디스토션, 숨소리</p></div></div>
+  </div>
+  <p class="note" style="margin-top:14px">그리고 <b>검정 = 비어 있음</b>. 어두운 부분이 많을수록 그 높이에 소리가 없다는 뜻.</p>
+</section>
+
+<!-- 3 -->
+<section>
+  <div class="sec-head"><h2>3. 듣고 → 보고 → 근거 말하기</h2><span class="mono">곡 A · B · C · 각 30초 · 15분</span></div>
+  <p class="lead">곡 이름은 알려 주지 않는다. 먼저 30초를 듣고, 원래 그림을 보며 질문에 답한 뒤 아래 해설 그림으로 확인한다. 곡 이름은 마지막에 공개.</p>
+  <details class="box"><summary>진행 키 (교사용)</summary><p class="note" style="margin:8px 0 0">그림마다 원래 그림 아래에 해설 그림이 함께 있음. 곡 카드 위에 마우스를 올리고 <b>T</b> → 곡 이름 공개. 비교표 위에서 <b>A</b> → 정답 칸 공개.</p></details>
+
+  <div id="songs" style="margin-top:16px">
+    <div class="song" style="--c:var(--A)">
+      <div class="top"><span class="lab">곡 A</span><audio controls preload="metadata" playsinline src="clips/audio_songA.mp3"></audio><span class="title">aespa 〈Whiplash〉 (2024)</span></div>
+      <ul class="qs">
+        <li>처음 7초와 그 뒤, 파형의 모양은 어떻게 달라지나?</li>
+        <li>스펙트로그램에서 가장 밝은 높이는 어디인가?</li>
+        <li>곡 앞부분의 고음 쪽은 밝은가, 어두운가?</li>
+        <li>소리가 순간 멈추는 곳이 보이나?</li>
+      </ul>
+      <div class="figs">
+        <figure class="pair"><div><span class="tag2 r">원래 그림</span><img class="raw" src="img/audio/songA_wave.png" alt="곡 A 파형" loading="lazy"></div><div><span class="tag2 a">해설</span><img class="ann" src="img/audio/songA_wave_a.png" alt="곡 A 파형 해설" loading="lazy"></div></figure>
+        <figure class="pair"><div><span class="tag2 r">원래 그림</span><img class="raw" src="img/audio/songA_spec.png" alt="곡 A 스펙트로그램" loading="lazy"></div><div><span class="tag2 a">해설</span><img class="ann" src="img/audio/songA_spec_a.png" alt="곡 A 스펙트로그램 해설" loading="lazy"></div></figure>
+      </div>
+    </div>
+
+    <div class="song" style="--c:var(--B)">
+      <div class="top"><span class="lab">곡 B</span><audio controls preload="metadata" playsinline src="clips/audio_songB.mp3"></audio><span class="title">DAY6 〈HAPPY〉 (2024)</span></div>
+      <ul class="qs">
+        <li>2초 전과 후, 파형과 스펙트로그램은 어떻게 달라지나?</li>
+        <li>저음의 밝은 띠는 곡 A와 비교해 높이가 어떻게 다른가?</li>
+        <li>고음 쪽(위쪽)은 얼마나 채워져 있나?</li>
+        <li>중간 높이에 보이는 굽은 선은 무엇의 흔적일까?</li>
+      </ul>
+      <div class="figs">
+        <figure class="pair"><div><span class="tag2 r">원래 그림</span><img class="raw" src="img/audio/songB_wave.png" alt="곡 B 파형" loading="lazy"></div><div><span class="tag2 a">해설</span><img class="ann" src="img/audio/songB_wave_a.png" alt="곡 B 파형 해설" loading="lazy"></div></figure>
+        <figure class="pair"><div><span class="tag2 r">원래 그림</span><img class="raw" src="img/audio/songB_spec.png" alt="곡 B 스펙트로그램" loading="lazy"></div><div><span class="tag2 a">해설</span><img class="ann" src="img/audio/songB_spec_a.png" alt="곡 B 스펙트로그램 해설" loading="lazy"></div></figure>
+      </div>
+    </div>
+
+    <div class="song" style="--c:var(--C)">
+      <div class="top"><span class="lab">곡 C</span><audio controls preload="metadata" playsinline src="clips/audio_songC.mp3"></audio><span class="title">Ed Sheeran 〈Shape of You〉 (2017)</span></div>
+      <ul class="qs">
+        <li>처음 5초 동안 저음은 있나?</li>
+        <li>파형의 뾰족한 모양은 곡 A·B와 어떻게 다른가?</li>
+        <li>노래가 들어오는 순간은 몇 초쯤이고, 그림에서는 무엇으로 보이나?</li>
+        <li>검정(빈 공간)은 곡 A·B보다 많은가, 적은가?</li>
+      </ul>
+      <div class="figs">
+        <figure class="pair"><div><span class="tag2 r">원래 그림</span><img class="raw" src="img/audio/songC_wave.png" alt="곡 C 파형" loading="lazy"></div><div><span class="tag2 a">해설</span><img class="ann" src="img/audio/songC_wave_a.png" alt="곡 C 파형 해설" loading="lazy"></div></figure>
+        <figure class="pair"><div><span class="tag2 r">원래 그림</span><img class="raw" src="img/audio/songC_spec.png" alt="곡 C 스펙트로그램" loading="lazy"></div><div><span class="tag2 a">해설</span><img class="ann" src="img/audio/songC_spec_a.png" alt="곡 C 스펙트로그램 해설" loading="lazy"></div></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section>
+  <div class="sec-head"><h2>4. 세 곡 비교표</h2><span class="mono">활동지 · 5분</span></div>
+  <p class="lead">모둠별로 빈칸을 채운다. 그림에서 본 것(근거) → 들리는 느낌(해석) 순서로 쓴다.</p>
+  <div class="tscroll"><table class="t cmp" id="cmp">
+    <thead><tr><th>보는 곳</th><th><span class="chip" style="background:var(--A)"></span>곡 A</th><th><span class="chip" style="background:var(--B)"></span>곡 B</th><th><span class="chip" style="background:var(--C)"></span>곡 C</th></tr></thead>
+    <tbody>
+      <tr><td><b>파형의 모양</b><br><span class="note">꽉 찬 덩어리 / 띄엄띄엄</span></td><td class="a"><span>7.4초 전 띄엄띄엄 → 이후 ±1까지 꽉 찬 덩어리</span></td><td class="a"><span>2.1초 전 작은 소리 → 8초부터 꽉 찬 덩어리</span></td><td class="a"><span>뾰족했다 빨리 줄어드는 모양 반복, 끝까지 틈이 보임</span></td></tr>
+      <tr><td><b>저음</b> (256Hz 아래)</td><td class="a"><span>30~130Hz 띠가 가장 밝고 끊기지 않음</span></td><td class="a"><span>40~250Hz까지 두껍고 넓은 띠</span></td><td class="a"><span>5초 전 거의 없음. 이후에도 이 곡 안에서는 중음 막대보다 어두움</span></td></tr>
+      <tr><td><b>중음</b> (256Hz~4kHz)</td><td class="a"><span>세로줄과 짧은 곡선이 촘촘함</span></td><td class="a"><span>가로줄이 빽빽하고, 노래 선율로 보이는 굽은 선이 뚜렷</span></td><td class="a"><span>짧은 가로 막대(튕기는 음) + 10초부터 노래 곡선</span></td></tr>
+      <tr><td><b>고음</b> (4kHz 위)</td><td class="a"><span>앞 7초는 거의 검정, 이후 채워짐</span></td><td class="a"><span>2초 이후 처음부터 끝까지 고르게 채워짐</span></td><td class="a"><span>가는 세로줄 위주, 빈 곳이 많음</span></td></tr>
+      <tr><td><b>한마디로</b></td><td class="a"><span>저음이 가장 밝고, 8초부터 위아래가 꽉 참</span></td><td class="a"><span>저음부터 고음까지 고르게 꽉 참</span></td><td class="a"><span>중음이 가장 밝고, 빈 곳(검정)이 가장 많음</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 5 -->
+<section>
+  <div class="sec-head"><h2>5. 악기는 어느 높이에 사나</h2><span class="mono">주파수 대역표 · 5분</span></div>
+  <p class="lead">스펙트로그램과 <b>같은 세로 눈금</b>으로 대중음악 악기(전자음 포함)의 대략적인 대역을 그렸다. 진한 막대는 <b>주 대역</b>(소리가 가장 많이 모인 범위: 선율 악기·보컬은 기본음, 드럼은 몸통 울림), 옅은 막대는 <b>보조 대역</b>(약하지만 음색·어택에 영향을 주는 범위)이다. 기본음이 없는 하이햇·심벌은 주 대역이 위쪽에 있다.</p>
+  <figure class="bigimg" style="margin:0"><img src="img/audio/inst_bands.png" alt="대중음악 악기별 주파수 대역표" loading="lazy"></figure>
+  <p class="note">점 3개는 왼쪽부터 곡 A·B·C. 채운 점은 그림과 청취로 판단한 악기이며, 음원 제작 정보(크레디트)로 확인한 것은 아니다. 대역은 음높이·연주법·음색 설정에 따라 달라지는 대략적인 범위다. 기타·베이스·마림바의 음역은 Adler(2016)를 따랐고, 드럼·전자음·목소리의 대역은 녹음 실무에서 쓰는 대략값으로 특정 문헌의 수치를 옮긴 것은 아니다.</p>
+  <div class="tabs" role="tablist"><button type="button" class="on" data-t="A">곡 A와 맞춰 보기</button><button type="button" data-t="B">곡 B와 맞춰 보기</button><button type="button" data-t="C">곡 C와 맞춰 보기</button></div>
+  <figure class="bigimg" style="margin:0"><img id="instimg" src="img/audio/songA_inst.png" alt="곡별 추정 악기 대역과 스펙트로그램 비교" loading="lazy"></figure>
+</section>
+
+<!-- 6 -->
+<section>
+  <div class="sec-head"><h2>6. 교육에서 어떻게 쓰나</h2><span class="mono">활용 · 6분</span></div>
+  <div class="grid2">
+    <div class="use"><span class="ic">👂</span><div><b>감상: 느낌을 근거로 말하기</b><p>"꽉 차게 들린다"를 "고음까지 고르게 밝다"처럼 <b>보이는 근거</b>로 바꿔 말하게 한다. 들은 것과 본 것을 오가며 음색의 차이를 설명한다.</p></div></div>
+    <div class="use"><span class="ic">🎤</span><div><b>가창: 내 목소리 보기</b><p>노래를 녹음해 음높이 곡선과 비브라토를 눈으로 확인한다. 성악 레슨에 실시간 음성 시각화를 쓴 실행연구에서 교사·학생은 대체로 도움이 되었다고 보고했고(Welch et al., 2005), 가창 훈련용 시각 피드백 도구를 정리한 문헌 검토도 있다(Hoppe et al., 2006).</p></div></div>
+    <div class="use"><span class="ic">🎛️</span><div><b>창작·편곡: 높이 나눠 쓰기</b><p>악기들이 같은 높이에 몰리면 서로를 가려(마스킹) 또렷하게 들리지 않을 수 있다. 대역표로 악기마다 자리를 나누는 편곡·믹싱의 원리를 설명한다(Owsinski, 2017).</p></div></div>
+    <div class="use"><span class="ic">🧪</span><div><b>융합: 소리의 과학</b><p>주파수·진폭·배음을 그림으로 확인한다. 같은 음높이라도 악기마다 배음 줄의 세기가 다르다는 것을 보여 줄 수 있다(Rossing et al., 2002).</p></div></div>
+  </div>
+  <div class="callout" style="margin-top:16px"><b>교육과정 연결</b> — 2022 개정 음악과 교육과정은 교과의 성격에서 "다양한 미디어를 활용하여 음악 활동을 함으로써 <b>디지털 소양</b>을 함양"한다고 밝힌다(교육부, 2022, p. 6). 고등학교 「음악」 감상 영역의 성취기준 적용 시 고려 사항에서는 "다양한 디지털 매체를 활용하여 <b>음악을 감상</b>함으로써 디지털 문해력 교육과 연계하도록 한다"고 제시한다(p. 41). 음원을 파형과 스펙트로그램으로 바꿔 감상의 근거를 찾는 이 수업은 이 방향에 맞닿아 있다.</div>
+
+  <h3 style="margin:22px 0 10px;font-size:1.1rem">수업에서 쓸 수 있는 도구</h3>
+  <div class="tscroll"><table class="t">
+    <thead><tr><th>도구</th><th>특징</th><th>수업 장면</th></tr></thead>
+    <tbody>
+      <tr><td><b>Chrome Music Lab — Spectrogram</b></td><td>웹에서 바로 실행, 설치 없음. 마이크 소리를 실시간으로 그림</td><td>도입: 학생이 소리를 내며 그림이 변하는 것을 체험</td></tr>
+      <tr><td><b>Sonic Visualiser</b></td><td>무료 음원 분석 프로그램. 파형·스펙트로그램을 겹쳐 보고 확대 가능(Cannam et al., 2010)</td><td>감상: 곡의 특정 구간 확대 비교</td></tr>
+      <tr><td><b>Audacity</b></td><td>무료 녹음·편집 프로그램. 트랙 보기를 스펙트로그램으로 전환 가능</td><td>가창·창작: 녹음 후 바로 확인</td></tr>
+      <tr><td><b>Google Colab + librosa</b></td><td>파이썬 코드로 그림을 직접 그림. 여러 곡을 같은 조건으로 비교(McFee et al., 2015)</td><td>심화: 오늘 그림을 만든 방법</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 7 -->
+<section>
+  <div class="sec-head"><h2>7. 수업 흐름 — 교실에서 이렇게</h2><span class="mono">1차시 예시</span></div>
+  <div class="steps">
+    <div class="step"><span class="n">1</span><div><b>듣기</b><p>곡 이름 없이 30초 듣기. "꽉 찼다 / 비었다 / 묵직하다" 느낌을 한 단어로 적기</p></div></div>
+    <div class="step"><span class="n">2</span><div><b>예측</b><p>"이 곡의 그림은 어디가 밝을까?" 저음·중음·고음 중 골라 보기</p></div></div>
+    <div class="step"><span class="n">3</span><div><b>보기</b><p>파형 → 스펙트로그램 순서로 보며 네 가지 모양(가로줄·세로줄·곡선·번진 영역) 찾기</p></div></div>
+    <div class="step"><span class="n">4</span><div><b>근거 말하기</b><p>"OO초, OO높이가 밝으니까 OO하게 들린다" 형식으로 발표</p></div></div>
+    <div class="step"><span class="n">5</span><div><b>비교·확인</b><p>비교표 채우기 → 악기 대역표로 확인 → 곡 이름 공개</p></div></div>
+    <div class="step"><span class="n">6</span><div><b>확장</b><p>내가 좋아하는 곡 또는 내 목소리로 같은 그림을 만들어 보기</p></div></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><h2>참고문헌</h2></div>
+  <ol class="refs">
+    <li>교육부 (2022). 음악과 교육과정 (교육부 고시 제2022-33호 [별책 12]).</li>
+    <li>Adler, S. (2016). <i>The Study of Orchestration</i> (4th ed.). W. W. Norton.</li>
+    <li>Cannam, C., Landone, C., &amp; Sandler, M. (2010). Sonic Visualiser: An open source application for viewing, analysing, and annotating music audio files. <i>Proceedings of the 18th ACM International Conference on Multimedia</i>, 1467–1468.</li>
+    <li>Hoppe, D., Sadakata, M., &amp; Desain, P. (2006). Development of real-time visual feedback assistance in singing training: A review. <i>Journal of Computer Assisted Learning, 22</i>(4), 308–316. https://doi.org/10.1111/j.1365-2729.2006.00178.x</li>
+    <li>McFee, B., Raffel, C., Liang, D., Ellis, D. P. W., McVicar, M., Battenberg, E., &amp; Nieto, O. (2015). librosa: Audio and music signal analysis in Python. <i>Proceedings of the 14th Python in Science Conference</i>, 18–24.</li>
+    <li>Müller, M. (2021). <i>Fundamentals of Music Processing</i> (2nd ed.). Springer.</li>
+    <li>Owsinski, B. (2017). <i>The Mixing Engineer's Handbook</i> (4th ed.). BOMG Publishing.</li>
+    <li>Rossing, T. D., Moore, F. R., &amp; Wheeler, P. A. (2002). <i>The Science of Sound</i> (3rd ed.). Addison-Wesley.</li>
+    <li>Welch, G. F., Howard, D. M., Himonides, E., &amp; Brereton, J. (2005). Real-time feedback in the singing studio: An innovatory action-research project using new voice technology. <i>Music Education Research, 7</i>(2), 225–249. https://doi.org/10.1080/14613800500169779</li>
+  </ol>
+</section>
+</main>
+<footer><div class="wrap">음원은 수업용으로 앞 30초만 사용함 · 그림: Google Colab + librosa로 생성(곡마다 그 곡의 최댓값을 0dB로 표시)</div></footer>
+
+<script>
+(function(){
+  // 곡 카드: 마우스를 올리고 A = 해설 그림, T = 곡 이름
+  let hover=null, cmpHover=false;
+  document.querySelectorAll('.song').forEach(c=>{c.addEventListener('mouseenter',()=>{hover=c;});});
+  const cmp=document.getElementById('cmp');
+  cmp.addEventListener('mouseenter',()=>{cmpHover=true;hover=null;});cmp.addEventListener('mouseleave',()=>cmpHover=false);
+  document.addEventListener('keydown',e=>{
+    if(e.ctrlKey||e.metaKey||e.altKey)return;
+    if(/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||''))return;
+    const k=e.key.toLowerCase();
+    if(cmpHover&&k==='a'){cmp.classList.toggle('show-ans');return;}
+    if(!hover)return;
+    if(k==='t')hover.classList.toggle('show-title');
+  });
+  // 한 곡만 재생
+  const auds=[...document.querySelectorAll('audio')];
+  auds.forEach(a=>a.addEventListener('play',()=>auds.forEach(b=>{if(b!==a)b.pause();})));
+  // 악기 대역 탭
+  document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    document.getElementById('instimg').src='img/audio/song'+b.dataset.t+'_inst.png';
+  }));
+})();
+</script>
+</body></html>

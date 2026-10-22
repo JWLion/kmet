@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><script>/* iPhone 무음 스위치가 켜져 있어도 소리가 나게 */try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}</script><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>하우스 계보</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 한 줄기(하우스)에서 세 갈래 — 소리 / 빠르기 / 자리 — 를 위에서 아래로, 각 갈래마다 16칸 킥 그리드 */
+:root{
+  --bg:#f6f4f2; --paper:#ffffff; --ink:#1d1a19; --mute:#6c6461; --line:#e3ddd9;
+  --red:#d4202a; --sound:#d9461f; --tempo:#c7861a; --place:#6a45c2; --kick:#1d1a19; --cell:#ece7e3;
+  --f-display:"Do Hyeon","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161413; --paper:#201d1c; --ink:#f1ece9; --mute:#a69c97; --line:#35302e;
+  --red:#ff5a5f; --sound:#ff7a52; --tempo:#f0b04a; --place:#a98bf0; --kick:#f1ece9; --cell:#2e2a28; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161413; --paper:#201d1c; --ink:#f1ece9; --mute:#a69c97; --line:#35302e;
+  --red:#ff5a5f; --sound:#ff7a52; --tempo:#f0b04a; --place:#a98bf0; --kick:#f1ece9; --cell:#2e2a28; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:40px}
+h1,h2,h3{word-break:keep-all;font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+header{display:grid;gap:10px}
+header h1{font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.05}
+header p{margin:0;max-width:62ch;color:var(--mute)}
+.formula{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{font-family:var(--f-mono);font-size:.78rem;padding:4px 10px;border-radius:999px;border:1px solid currentColor}
+.c-sound{color:var(--sound)} .c-tempo{color:var(--tempo)} .c-place{color:var(--place)}
+
+/* 갈래 */
+.lane{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:start}
+.lane-head{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:grid;gap:4px}
+.lane-head .no{font-family:var(--f-mono);font-size:.75rem;color:var(--mute)}
+.lane-head h2{font-size:1.7rem;line-height:1.1}
+.lane-head .verdict{font-size:.82rem;color:var(--mute)}
+.lane[data-k="root"] h2{color:var(--ink)} .lane[data-k="sound"] h2{color:var(--sound)} .lane[data-k="tempo"] h2{color:var(--tempo)} .lane[data-k="place"] h2{color:var(--place)}
+.stack{display:grid;gap:12px;min-width:0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.card-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px}
+.card h3{font-size:1.35rem;margin-right:auto}
+.meta{font-family:var(--f-mono);font-size:.75rem;color:var(--mute);font-variant-numeric:tabular-nums}
+.card p{margin:0;max-width:66ch}
+.root{border-style:dashed}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:4px;color:var(--paper)}
+.lane[data-k="sound"] .tag{background:var(--sound)} .lane[data-k="tempo"] .tag{background:var(--tempo)} .lane[data-k="place"] .tag{background:var(--place)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pair div{border-top:1px solid var(--line);padding-top:8px;font-size:.88rem}
+.pair .k{display:block;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;color:var(--mute);text-transform:uppercase}
+
+/* 16칸 킥 그리드 */
+.grid16{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:3px;max-width:420px}
+.grid16 i{aspect-ratio:1;max-width:100%;border-radius:3px;background:var(--cell)}
+.grid16 i:nth-child(4n+1){outline:1px solid var(--line);outline-offset:-1px}
+.grid16 i.on{background:var(--kick)}
+.grid-cap{font-family:var(--f-mono);font-size:.7rem;color:var(--mute)}
+
+.arrow{font-family:var(--f-mono);font-size:.8rem;color:var(--mute);padding-left:4px}
+
+/* 비교표 */
+section.tables{display:grid;gap:18px}
+section.tables h2{font-size:1.6rem}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:600}
+td.g{font-weight:700;white-space:nowrap}
+.verdict-cell{font-weight:700}
+.hi{color:var(--sound)}
+.note{font-size:.82rem;color:var(--mute);max-width:72ch;margin:0}
+footer{font-size:.78rem;color:var(--mute);display:grid;gap:4px}
+footer a{color:inherit}
+
+@media (max-width:680px){
+  .lane{grid-template-columns:1fr;gap:12px}
+  .lane-head{position:static}
+  .pair{grid-template-columns:1fr}
+}
+
+/* 듣기 칩 */
+.plays{display:flex;flex-wrap:wrap;gap:8px}
+.play{appearance:none;font:inherit;font-size:.86rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 10px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;position:relative;overflow:hidden;text-align:left}
+.play .ic{font-family:var(--f-mono);font-size:.68rem;color:var(--mute)}
+.play .role{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.06em;color:var(--mute);text-transform:uppercase}
+.play:hover,.play:focus-visible{border-color:var(--ink)}
+.play:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.play.on{border-color:currentColor}
+.lane[data-k="sound"] .play.on{color:var(--sound)} .lane[data-k="tempo"] .play.on{color:var(--tempo)} .lane[data-k="place"] .play.on{color:var(--place)}
+.play.on .ic{color:inherit;animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:.35}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.play.on .ic{animation:none}}
+.play .bar{position:absolute;left:0;bottom:0;height:2px;width:100%;background:currentColor;transform-origin:left;transform:scaleX(0)}
+.play.inl{display:inline;border:0;border-radius:0;padding:0 1px;background:none;font-size:inherit;font-weight:700;color:inherit;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;overflow:visible;gap:0}
+.play.inl .ic{font-size:.6em;margin-right:2px;vertical-align:.15em}
+.play.inl.red,.play.inl.red.on{color:var(--red)}
+.play.inl .bar{bottom:-2px}
+.howto{font-size:.82rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 14px;margin:0}
+.howto b{color:var(--ink);font-weight:600}
+#pop{position:fixed;z-index:50;width:360px;max-width:calc(100vw - 32px);border-radius:10px;overflow:hidden;background:#000;box-shadow:0 14px 36px rgba(0,0,0,.35);pointer-events:none}
+#pop video{display:block;width:100%;height:auto}
+#hint{position:fixed;z-index:51;background:var(--ink);color:var(--bg);font-size:.75rem;padding:5px 9px;border-radius:6px;pointer-events:none}
+
+.story{border-top:1px solid var(--line);padding-top:10px}
+.story summary{cursor:pointer;font-weight:700;list-style:none;display:flex;gap:10px;align-items:baseline}
+.story summary::-webkit-details-marker{display:none}
+.story summary span{font-family:var(--f-mono);font-size:.7rem;font-weight:400;color:var(--mute)}
+.story[open] summary span{display:none}
+.story .flow{font-family:var(--f-mono);font-size:.78rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;margin:10px 0}
+.story .flow b{font-family:var(--f-body);font-size:.88rem;color:var(--ink)}
+.story .steps{margin:0 0 10px;padding-left:20px;display:grid;gap:6px;font-size:.92rem;max-width:68ch}
+.story .pair{margin-bottom:8px}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">1교시 · 하우스 계열 정리</span>
+    <h1>하우스에서 무엇이 바뀌었나</h1>
+    <p>같은 뿌리에서 나온 음악도 무엇을 바꿨느냐에 따라 갈래가 갈린다. 소리만 바꾸면 아직 하우스이고, 빠르기와 자리가 바뀌면 다른 장르로 넘어간다.</p>
+    <p class="howto"><span><b>♪ 곡 제목에 마우스를 올리면</b> 핵심 30초가 나옴</span><span>▣ 표시는 영상</span><span>소리가 안 나면 제목을 한 번 클릭</span></p>
+
+  <!-- 출발점 -->
+  <section class="lane" data-k="root" aria-labelledby="l0">
+    <div class="lane-head">
+      <span class="no">◎ 출발점</span>
+      <h2 id="l0">하우스의 탄생</h2>
+      <span class="verdict">미국 시카고 · 네 박 킥이 정해짐</span>
+    </div>
+    <div class="stack">
+      <article class="card root">
+        <div class="card-top"><h3>시카고 하우스</h3><span class="meta">미국 · 시카고 · 1980년대 초</span></div>
+        <p>클럽 Warehouse(장르 이름의 유래)에서 DJ 프랭키 너클스가 디스코 레코드에 드럼머신 비트를 덧씌운 데서 출발. 첫 하우스 레코드는 〈On &amp; On〉(1984), 〈Love Can't Turn Around〉(1986)이 영국 톱10에 들며 세계로.</p>
+        <div class="plays"><button type="button" class="play" data-clip="clips/chicago_on_and_on.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Jesse Saunders 〈On &amp; On〉 1984<span class="role">첫 하우스</span></button><button type="button" class="play" data-clip="clips/chicago_love_cant_turn_around.mp4" data-kind="video" data-len="30"><span class="ic">▣</span>Farley "Jackmaster" Funk 〈Love Can't Turn Around〉 1986<span class="role">영국 톱10</span></button></div>
+        <details class="story">
+          <summary>〈On &amp; On〉은 어떻게 만들어졌나 <span>펼치기</span></summary>
+          <div class="flow"><b>디스코 부틀렉</b>→<b>도난</b>→<b>드럼머신으로 다시 만듦</b>→<b>500장 자가 제작</b>→<b>“DJ도 음반을 낼 수 있다”</b></div>
+          <ol class="steps">
+            <li><b>원래는 남의 믹스였음.</b> 세운더스가 클럽에서 즐겨 틀던 곡은 부틀렉 메가믹스 Mach 〈On &amp; On〉(1980). 여러 디스코 음반의 루프를 이어 붙인 것으로, Player One 〈Space Invaders〉의 베이스라인과 Lipps Inc 〈Funkytown〉 등이 들어 있었음. 다른 DJ들은 갖고 있지 않던, 세운더스만의 대표 곡이었음.</li>
+            <li><b>그 음반을 도난당함.</b> 그래서 같은 곡을 직접 다시 만들기로 함. 친구이자 프로듀서인 Vince Lawrence와 함께 작업, 1983년 녹음.</li>
+            <li><b>디스코 루프를 기계로 흉내 냄.</b> 드럼은 <b>Roland TR-808</b>, 신시사이저는 <b>Korg Poly-61</b>, 베이스는 <b>Roland TB-303</b>. Player One 〈Space Invaders〉, Donna Summer 〈Bad Girls〉, Munich Machine의 곡에서 리듬 트랙을 가져와 다시 연주(interpolation)하고, 최면 같은 가사와 전자음을 덧붙임.</li>
+            <li><b>직접 찍어서 직접 팔았음.</b> 1984년 초 자신의 레이블 Jes Say Records에서 발매. 시카고의 유일한 프레싱 공장에서 약 500장을 찍었고, 음반점 Importes Etc.에서 며칠 만에 매진. 두 사람이 도장 찍고 포장해 가게마다 배달함.</li>
+          </ol>
+          <div class="pair">
+            <div><span class="k">세운더스</span>“클럽 The Playground에서 카세트로 틀었더니 곧바로 압도적인 반응이 왔다.” · “DJ들이 다들 말했다. 제시도 DJ인데, 나도 할 수 있겠다.”</div>
+            <div><span class="k">마셜 제퍼슨</span>“판을 뒤흔든 변화였다. 아티스트가 DJ였으니까. 그전엔 없던 일이었다.”</div>
+          </div>
+          <p class="note">흔히 ‘비닐로 나온 첫 하우스 곡’으로 꼽히지만, 이 ‘최초’에는 이견도 있음. 베이스에 쓴 TB-303은 아래 애시드 하우스의 바로 그 기계임.</p>
+        </details>
+        <div class="grid16" aria-label="네 박 모두 킥"><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
+        <span class="grid-cap">킥 · 네 박 모두 (16칸 = 한 마디). 아래 갈래는 모두 이 칸을 그대로 씀</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ① 소리 -->
+  <section class="lane" data-k="sound" aria-labelledby="l1">
+    <div class="lane-head">
+      <span class="no">① 소리</span>
+      <h2 id="l1">소리만 바뀜</h2>
+      <span class="verdict">킥 자리 그대로 → 여전히 하우스</span>
+    </div>
+    <div class="stack">
+      <article class="card root">
+        <div class="card-top"><h3>개러지 하우스</h3><span class="meta">미국 · 뉴욕 · 1980년대 초·중반</span></div>
+        <p>Paradise Garage 클럽, DJ Larry Levan. 가스펠풍 피아노와 소울 보컬.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><h3>딥 하우스</h3><span class="meta">미국 · 시카고 · 1980년대 중반</span><span class="tag">부드럽고 깊은 음색 · soulful</span></div>
+        <p>시카고 하우스에 1980년대 재즈펑크와 소울을 섞고, 복잡한 코드 구조와 부드러운 패드 음색을 씀. 110~125 BPM.</p>
+        <div class="pair">
+          <div><span class="k">개척자</span>Larry Heard(Mr. Fingers) — "딥 하우스의 설계도"로 평가</div>
+          <div><span class="k">대중 히트</span>Route 94 feat. Jess Glynne — 영국 싱글 차트 1위, DJ Mag "클래식한 소리의 딥 하우스"</div>
+        </div>
+        <div class="plays"><button type="button" class="play" data-clip="clips/deep_can_you_feel_it.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Mr. Fingers 〈Can You Feel It〉 1986<span class="role">원조</span></button><button type="button" class="play" data-clip="clips/deep_route94_my_love.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Route 94 〈My Love〉 2014<span class="role">대중 히트</span></button></div>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><h3>애시드 하우스</h3><span class="meta">미국 · 시카고 · 1980년대 중반</span><span class="tag">Roland TB-303</span></div>
+        <p>TB-303의 필터 공명을 올리고 차단 주파수를 내려 '꿀렁이는' 베이스를 만듦.</p>
+        <div class="pair">
+          <div><span class="k">개척자</span>Phuture 〈Acid Tracks〉 1987 (Trax Records)</div>
+          <div><span class="k">대중 히트</span>A Guy Called Gerald 〈Voodoo Ray〉 1988 — 영국 12위, Mixmag "사실상 첫 영국 애시드 하우스 음반"</div>
+        </div>
+        <div class="plays"><button type="button" class="play" data-clip="clips/acid_tb303_video.mp4" data-kind="video" data-len="10"><span class="ic">▣</span>TB-303 소리 영상<span class="role">소리 체험</span></button><button type="button" class="play" data-clip="clips/acid_phuture_acid_tracks.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Phuture 〈Acid Tracks〉 1987<span class="role">원조</span></button></div>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><h3>프렌치 하우스</h3><span class="meta">프랑스 · 1990년대 중반</span><span class="tag">필터를 건 디스코 샘플</span></div>
+        <p>장르 특징: 1970년대 말~80년대 초 유럽 디스코를 샘플링하고 필터·페이저를 걸음. 〈One More Time〉은 1978년 디스코 곡 Eddie Johns 〈More Spell on You〉의 관악을 샘플링해 다시 배열하고 훅으로 씀.</p>
+        <div class="pair">
+          <div><span class="k">개척자</span>Daft Punk(Thomas Bangalter), Motorbass 《Pansoul》 1996</div>
+          <div><span class="k">대중 히트</span>Daft Punk 〈One More Time〉 2000 — 프랑스 1위, 영국 2위</div>
+        </div>
+        <div class="plays"><button type="button" class="play" data-clip="clips/french_one_more_time.mp4" data-kind="video" data-len="30"><span class="ic">▣</span>Daft Punk 〈One More Time〉 2000<span class="role">대중 히트</span></button><button type="button" class="play" data-clip="clips/french_one_more_time_sample.mp4" data-kind="video" data-len="51"><span class="ic">▣</span>샘플 비교 — 〈More Spell on You〉 → 〈One More Time〉<span class="role">샘플링</span></button></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ② 빠르기 -->
+  <section class="lane" data-k="tempo" aria-labelledby="l2">
+    <div class="lane-head">
+      <span class="no">② 빠르기</span>
+      <h2 id="l2">빠르기가 바뀜</h2>
+      <span class="verdict">120 → 130 BPM</span>
+    </div>
+    <div class="stack">
+      <article class="card">
+        <div class="card-top"><h3>UK 개러지 · 스피드 개러지</h3><span class="meta">영국 · 런던 · 1990년대 초 등장</span></div>
+        <p>뉴욕 개러지 하우스가 런던으로 건너와 자람. <button type="button" class="play inl red" data-clip="clips/ukg_jungle_through_the_years.mp4" data-kind="video" data-len="29"><span class="ic">▣</span>정글</button>(170 BPM) 옆방에서 130 BPM의 소울풀한 대안이 됨. DJ EZ가 Todd Edwards 〈The Praise〉(1994)를 미국 표준 120 대신 130 BPM으로 틀었고, 이렇게 빨라진 개러지가 <button type="button" class="play inl" data-clip="clips/ukg_garage_through_the_years.mp4" data-kind="video" data-len="35"><span class="ic">▣</span>스피드 개러지</button>로 불림.</p>
+        <div class="pair">
+          <div><span class="k">대중화</span>Armand Van Helden이 리믹스한 Sneaker Pimps 〈Spin Spin Sugar〉 1997</div>
+          <div><span class="k">퍼진 길</span>해적 라디오 Freek FM, Rinse FM(1994 정글 방송 → 개러지)</div>
+        </div>
+        <div class="plays"><button type="button" class="play" data-clip="clips/ukg_spin_spin_sugar.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Sneaker Pimps 〈Spin Spin Sugar〉 (Armand's Dark Garage Mix) 1997<span class="role">대중화</span></button></div>
+        <div class="grid16" aria-label="네 박 모두 킥, 빠르기만 올라감"><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
+        <span class="grid-cap">킥 자리는 하우스와 같음 · 빠르기만 130</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ③ 자리 -->
+  <section class="lane" data-k="place" aria-labelledby="l3">
+    <div class="lane-head">
+      <span class="no">③ 자리</span>
+      <h2 id="l3">자리가 바뀜</h2>
+      <span class="verdict">리듬 자리의 변형 → 다른 장르</span>
+    </div>
+    <div class="stack">
+      <article class="card">
+        <div class="card-top"><h3>2스텝</h3><span class="meta">영국 · 런던 · 전성기 1999~2001</span></div>
+        <p>규칙적인 네 박 킥을 빼서 들쭉날쭉한 리듬을 만듦. 스피드 개러지가 발전한 결과이자 그에 대한 반응. 초기 사례는 Tina Moore 〈Never Gonna Let You Go〉의 Kelly G 리믹스(1997, 원곡 1995).</p>
+        <div class="plays"><button type="button" class="play" data-clip="clips/twostep_re_rewind.mp4" data-kind="video" data-len="30"><span class="ic">▣</span>Artful Dodger &amp; Craig David 〈Re-Rewind〉 1999<span class="role">원류</span></button><button type="button" class="play" data-clip="clips/twostep_seven.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>정국 〈Seven〉 feat. Latto 2023<span class="role">K-pop</span></button></div>
+        <div class="grid16" aria-label="킥이 자리를 비움">
+          <i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <span class="grid-cap">예시 · 셋째 박 킥이 비고 엇박으로 들어감</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="tables" aria-labelledby="t1">
+    <h2 id="t1">소리만 바뀐 세 갈래, 무엇이 가장 독창적인가</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>계열</th><th>무엇으로 만들었나</th><th>판단</th></tr></thead>
+        <tbody>
+          <tr><td class="g">딥 하우스</td><td>시카고 하우스에 1980년대 재즈펑크와 소울을 섞고, 복잡한 코드 구조를 씀</td><td class="verdict-cell">기존 재료를 결합</td></tr>
+          <tr><td class="g">프렌치 하우스</td><td>1970년대 말~80년대 초 유럽 디스코를 샘플링하고 필터·페이저를 걸음</td><td class="verdict-cell">기존 음반을 재가공</td></tr>
+          <tr><td class="g">애시드 하우스</td><td>Roland TB-303의 필터 공명을 올리고 차단 주파수를 내려 '꿀렁이는' 베이스를 만듦</td><td class="verdict-cell hi">이전에 없던 소리를 만듦</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">판단은 각 계열의 정의를 비교한 해석임. '필터·페이저'는 프렌치 하우스 장르 전체의 특징이며, 특정 곡의 제작 기록은 아님.</p>
+  </section>
+
+  <footer>
+    <span>DJ Mag — <a href="https://djmag.com/content/deep-house-tops-uk-charts-again" target="_blank" rel="noopener">Deep house tops the UK charts again</a> · Mixmag — <a href="https://mixmag.net/feature/house-music-40-years-jesse-saunders-chicago-on-and-on-history-subgenres" target="_blank" rel="noopener">하우스 40년</a></span>
+  </footer>
+</div>
+<div id="pop" hidden></div><div id="hint" hidden>한 번 클릭하면 소리가 나옵니다</div>
+<script>
+(function(){
+  var pop=document.getElementById('pop'),hint=document.getElementById('hint'),cur=null,m=null,t=null;
+  function stop(){ if(m){try{m.pause()}catch(e){} m.remove();} m=null; pop.hidden=true; hint.hidden=true;
+    if(cur){cur.classList.remove('on'); var b=cur.querySelector('.bar'); if(b) b.remove();} cur=null; clearInterval(t); }
+  function place(el){ var r=el.getBoundingClientRect(),w=pop.offsetWidth||360,h=pop.offsetHeight||203;
+    pop.style.left=Math.min(Math.max(16,r.left),innerWidth-w-16)+'px'; var y=r.top-h-10; pop.style.top=(y<12?r.bottom+10:y)+'px'; }
+  var t0=0; function start(el){ if(cur===el) return; stop(); cur=el; t0=Date.now(); var len=+el.dataset.len||30;
+    m=document.createElement(el.dataset.kind==='video'?'video':'audio'); m.src=el.dataset.clip; m.preload='auto'; m.playsInline=true;
+    if(el.dataset.kind==='video'){ pop.style.width=''; pop.appendChild(m); pop.hidden=false; place(el); m.addEventListener('loadedmetadata',function(){ pop.style.width=m.videoHeight>m.videoWidth?'240px':''; place(el); }); }
+    var bar=document.createElement('span'); bar.className='bar'; el.appendChild(bar); el.classList.add('on');
+    var p=m.play(); if(p&&p.catch) p.catch(function(){ var r=el.getBoundingClientRect(); hint.style.left=Math.max(16,r.left)+'px'; hint.style.top=(r.bottom+6)+'px'; hint.hidden=false; });
+    t=setInterval(function(){ if(!m) return; bar.style.transform='scaleX('+Math.min(1,m.currentTime/len)+')'; if(m.currentTime>=len||m.ended) stop(); },100); }
+  document.querySelectorAll('.play').forEach(function(el){
+    el.addEventListener('mouseenter',function(){start(el)});
+    var lt=0; el.addEventListener('touchstart',function(){lt=Date.now();},{passive:true}); el.addEventListener('mouseleave',function(){ if(Date.now()-lt<2000) return; stop(); });
+    el.addEventListener('click',function(){ if(cur===el&&m&&Date.now()-t0<700){ if(m.paused){ var q=m.play(); if(q&&q.catch) q.catch(function(){}); } return; } if(cur===el&&m){ if(m.paused){hint.hidden=true; m.play();} else stop(); } else start(el); });
+    el.addEventListener('blur',function(){ if(cur===el) stop(); });
+  });
+})();
+</script>

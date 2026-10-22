@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><script>/* iPhone 무음 스위치가 켜져 있어도 소리가 나게 */try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Four on the Floor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 위에 쌓기 단계 버튼, 가운데 5줄 × 16칸 시퀀서, 아래 템포·프리셋 */
+:root{
+  --bg:#f6f4f2; --paper:#fff; --ink:#1d1a19; --mute:#6c6461; --line:#e3ddd9; --cell:#ece7e3;
+  --kick:#d9461f; --clap:#c7861a; --hat:#2f8f7a; --bass:#6a45c2; --chord:#1f6fb0;
+  --f-display:"Do Hyeon","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR",system-ui,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 48px}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:22px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,5vw,3rem);line-height:1.05;margin:0;word-break:keep-all}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+header{display:grid;gap:8px}
+header p{margin:0;color:var(--mute);max-width:64ch}
+
+.steps{display:flex;flex-wrap:wrap;gap:8px}
+.step{appearance:none;font:inherit;font-size:.88rem;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 14px;display:inline-flex;gap:8px;align-items:center}
+.step b{font-family:var(--f-mono);font-size:.72rem;color:var(--mute)}
+.step.on{background:var(--ink);color:var(--bg);border-color:var(--ink)} .step.on b{color:inherit;opacity:.7}
+.step:focus-visible,.btn:focus-visible,.cell:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+.board{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px;overflow-x:auto}
+.row{display:grid;grid-template-columns:118px repeat(16,minmax(26px,1fr));gap:4px;align-items:center;min-width:560px;transition:opacity .2s}
+.row.off{opacity:.28}
+.lab{display:grid;line-height:1.2}
+.lab strong{font-size:.95rem}
+.lab span{font-family:var(--f-mono);font-size:.66rem;color:var(--mute)}
+.cell{appearance:none;border:0;padding:0;aspect-ratio:1;max-width:100%;border-radius:4px;background:var(--cell);cursor:pointer;position:relative}
+.cell.beat{box-shadow:inset 0 0 0 1px var(--line)}
+.cell.lit{background:var(--c)}
+.cell.now{outline:2px solid var(--ink);outline-offset:-2px}
+.cell.hit{transform:scale(1.12);transition:transform .06s}
+.nums{display:grid;grid-template-columns:118px repeat(16,minmax(26px,1fr));gap:4px;min-width:560px;font-family:var(--f-mono);font-size:.66rem;color:var(--mute);text-align:center}
+.nums span.b{color:var(--ink);font-weight:600}
+
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+.btn{appearance:none;font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:999px;padding:10px 22px;background:var(--kick);color:#fff;font-size:1rem}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:500;font-size:.88rem;padding:7px 14px}
+.tempo{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:.85rem;font-variant-numeric:tabular-nums}
+.tempo input{width:160px}
+.say{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-height:3.2em;font-size:1rem}
+.say b{color:var(--kick)}
+.pulse{display:flex;gap:6px}
+.pulse i{width:14px;height:14px;border-radius:50%;background:var(--cell)}
+.pulse i.on{background:var(--kick)}
+@media (prefers-reduced-motion:reduce){.cell.hit{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">하우스 · 직접 쌓아 보기</span>
+    <h1>Four on the Floor</h1>
+    <p>바닥(floor)에 네 번 — 한 마디 네 박마다 킥이 한 번씩. 킥 하나에서 시작해 한 겹씩 쌓으며 하우스가 완성되는 순간을 들어 보자. 칸을 누르면 켜고 끌 수 있다.</p>
+  </header>
+
+  <div class="steps" role="group" aria-label="쌓기 단계">
+    <button type="button" class="step" data-n="1"><b>1</b>킥만</button>
+    <button type="button" class="step" data-n="2"><b>2</b>+ 클랩</button>
+    <button type="button" class="step" data-n="3"><b>3</b>+ 오픈 하이햇</button>
+    <button type="button" class="step" data-n="4"><b>4</b>+ 베이스</button>
+    <button type="button" class="step" data-n="5"><b>5</b>+ 코드</button>
+  </div>
+
+  <div class="board" id="board" aria-label="16칸 시퀀서"></div>
+
+  <div class="say" id="say" aria-live="polite"><b>▶ 재생</b>을 누른 뒤 1번부터 차례로 눌러 보세요.</div>
+
+  <div class="controls">
+    <button type="button" class="btn" id="play">▶ 재생</button>
+    <button type="button" class="btn ghost" id="auto">자동으로 쌓기 (2마디마다 한 겹)</button>
+    <div class="tempo"><label for="bpm">빠르기</label><input id="bpm" type="range" min="90" max="140" value="124"><span id="bpmv">124 BPM</span></div>
+    <div class="pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  </div>
+  <div class="controls">
+    <button type="button" class="btn ghost" id="pHouse">하우스 기본 패턴</button>
+    <button type="button" class="btn ghost" id="pTwo">킥 자리 비우기 → 2스텝 느낌</button>
+    <button type="button" class="btn ghost" id="pHip">빠르기 92로 → 힙합 템포</button>
+  </div>
+</div>
+
+<script>
+var LAYERS=[
+ {k:'kick', name:'킥', sub:'KICK · 네 박 전부', c:'--kick', steps:[0,4,8,12]},
+ {k:'clap', name:'클랩', sub:'CLAP · 2·4박', c:'--clap', steps:[4,12]},
+ {k:'hat',  name:'오픈 하이햇', sub:'OPEN HAT · 오프비트 &', c:'--hat', steps:[2,6,10,14]},
+ {k:'bass', name:'베이스', sub:'BASS · 킥 사이를 메움', c:'--bass', steps:[2,6,10,14]},
+ {k:'chord',name:'코드', sub:'CHORD STAB · 짧게 찍기', c:'--chord', steps:[3,10]}
+];
+var SAY={
+ 1:'<b>킥만.</b> 쿵·쿵·쿵·쿵 — 네 박에 한 번씩 바닥을 친다. 이게 Four on the Floor.',
+ 2:'<b>+ 클랩.</b> 2·4박에 손뼉 — 킥은 그대로인데 몸이 앞뒤로 흔들리기 시작한다.',
+ 3:'<b>+ 오픈 하이햇.</b> 킥과 킥 사이 &마다 "치—". 쿵-치-쿵-치, 하우스 특유의 들썩임.',
+ 4:'<b>+ 베이스.</b> 킥이 빈 자리를 저음이 메운다. 바닥이 쉬지 않고 굴러간다.',
+ 5:'<b>+ 코드.</b> 짧게 찍는 건반 화음까지 — 하우스 완성. 이제 칸을 눌러 킥을 하나 빼 보자.'
+};
+var grid={}, level=0, board=document.getElementById('board');
+LAYERS.forEach(function(L){ grid[L.k]=new Array(16).fill(false); L.steps.forEach(function(s){grid[L.k][s]=true}); });
+var nums=document.createElement('div'); nums.className='nums'; nums.innerHTML='<span></span>'+Array.from({length:16},function(_,i){return i%4===0?'<span class="b">'+(i/4+1)+'</span>':'<span>'+['','e','&','a'][i%4]+'</span>'}).join('');
+board.appendChild(nums);
+var cells={};
+LAYERS.forEach(function(L,li){
+  var r=document.createElement('div'); r.className='row off'; r.id='row-'+L.k; r.style.setProperty('--c','var('+L.c+')');
+  r.innerHTML='<div class="lab"><strong>'+L.name+'</strong><span>'+L.sub+'</span></div>'; cells[L.k]=[];
+  for(var i=0;i<16;i++){ (function(i){ var b=document.createElement('button'); b.type='button'; b.className='cell'+(i%4===0?' beat':''); b.setAttribute('aria-label',L.name+' '+(i+1)+'번째 칸');
+    b.addEventListener('click',function(){ grid[L.k][i]=!grid[L.k][i]; paint(); }); r.appendChild(b); cells[L.k].push(b); })(i); }
+  board.appendChild(r);
+});
+function paint(){ LAYERS.forEach(function(L,li){ document.getElementById('row-'+L.k).classList.toggle('off',li>=level);
+  cells[L.k].forEach(function(b,i){ b.classList.toggle('lit',grid[L.k][i]); b.setAttribute('aria-pressed',grid[L.k][i]); }); }); }
+function setLevel(n){ level=n; document.querySelectorAll('.step').forEach(function(s){ s.classList.toggle('on',+s.dataset.n<=n) }); document.getElementById('say').innerHTML=SAY[n]||''; paint(); }
+document.querySelectorAll('.step').forEach(function(s){ s.addEventListener('click',function(){ ensure(); setLevel(+s.dataset.n); if(!playing) toggle(); }); });
+
+/* ---- 소리 (Web Audio로 합성) ---- */
+var ac=null, master, noiseBuf;
+function ensure(){ if(ac) return; ac=new (window.AudioContext||window.webkitAudioContext)(); master=ac.createGain(); master.gain.value=.8;
+  var comp=ac.createDynamicsCompressor(); master.connect(comp); comp.connect(ac.destination);
+  noiseBuf=ac.createBuffer(1,ac.sampleRate,ac.sampleRate); var d=noiseBuf.getChannelData(0); for(var i=0;i<d.length;i++) d[i]=Math.random()*2-1; }
+function env(g,t,a,peak,dec){ g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+a); g.gain.exponentialRampToValueAtTime(0.0001,t+a+dec); }
+function kick(t){ var o=ac.createOscillator(),g=ac.createGain(); o.frequency.setValueAtTime(150,t); o.frequency.exponentialRampToValueAtTime(45,t+.12); env(g,t,.002,1,.32); o.connect(g).connect(master); o.start(t); o.stop(t+.4); }
+function noise(t,type,f,q,peak,dec){ var s=ac.createBufferSource(); s.buffer=noiseBuf; var fl=ac.createBiquadFilter(); fl.type=type; fl.frequency.value=f; fl.Q.value=q; var g=ac.createGain(); env(g,t,.001,peak,dec); s.connect(fl).connect(g).connect(master); s.start(t); s.stop(t+dec+.05); }
+function clap(t){ [0,.011,.022].forEach(function(o){ noise(t+o,'bandpass',1400,1.2,.6,.05); }); noise(t+.03,'bandpass',1400,1.2,.5,.16); }
+function hat(t){ noise(t,'highpass',7500,.7,.35,.16); }
+function bass(t,dur){ var o=ac.createOscillator(),f=ac.createBiquadFilter(),g=ac.createGain(); o.type='sawtooth'; o.frequency.value=55; f.type='lowpass'; f.frequency.setValueAtTime(600,t); f.frequency.exponentialRampToValueAtTime(140,t+dur); env(g,t,.005,.5,dur); o.connect(f).connect(g).connect(master); o.start(t); o.stop(t+dur+.05); }
+function chord(t){ [220,261.63,329.63,392].forEach(function(fr){ var o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter(); o.type='square'; o.frequency.value=fr; f.type='lowpass'; f.frequency.value=2200; env(g,t,.004,.07,.22); o.connect(f).connect(g).connect(master); o.start(t); o.stop(t+.3); }); }
+var FN={kick:kick,clap:clap,hat:hat,bass:function(t){bass(t,60/bpm/4*1.6)},chord:chord};
+
+var bpm=124, playing=false, step=0, nextT=0, timer=null, auto=false, autoBars=0, prevNow=-1;
+var pulses=document.querySelectorAll('.pulse i');
+function schedule(){ while(nextT<ac.currentTime+.12){ var s=step;
+    LAYERS.forEach(function(L,li){ if(li<level && grid[L.k][s]) FN[L.k](nextT); });
+    (function(s,t){ setTimeout(function(){ draw(s) }, Math.max(0,(t-ac.currentTime)*1000)); })(s,nextT);
+    nextT+=60/bpm/4; step=(step+1)%16;
+    if(step===0 && auto){ autoBars++; if(autoBars%2===0 && level<5) setLevel(level+1); if(level>=5 && autoBars>=10){ auto=false; document.getElementById('auto').textContent='자동으로 쌓기 (2마디마다 한 겹)'; } }
+  } }
+function draw(s){ if(!playing) return; LAYERS.forEach(function(L,li){ if(prevNow>=0) cells[L.k][prevNow].classList.remove('now','hit'); var b=cells[L.k][s]; b.classList.add('now'); if(li<level&&grid[L.k][s]) b.classList.add('hit'); });
+  prevNow=s; if(s%4===0) pulses.forEach(function(p,i){ p.classList.toggle('on',i===s/4); }); }
+function toggle(){ ensure(); if(ac.state==='suspended') ac.resume();
+  playing=!playing; var b=document.getElementById('play');
+  if(playing){ if(level===0) setLevel(1); step=0; nextT=ac.currentTime+.05; timer=setInterval(schedule,25); b.textContent='■ 정지'; }
+  else { clearInterval(timer); b.textContent='▶ 재생'; LAYERS.forEach(function(L){ cells[L.k].forEach(function(c){c.classList.remove('now','hit')}) }); pulses.forEach(function(p){p.classList.remove('on')}); prevNow=-1; } }
+document.getElementById('play').addEventListener('click',toggle);
+document.getElementById('auto').addEventListener('click',function(){ ensure(); auto=!auto; autoBars=0; this.textContent=auto?'자동 쌓기 멈춤':'자동으로 쌓기 (2마디마다 한 겹)'; if(auto){ setLevel(1); if(!playing) toggle(); } });
+var bpmIn=document.getElementById('bpm'); function setBpm(v){ bpm=+v; bpmIn.value=v; document.getElementById('bpmv').textContent=v+' BPM'; }
+bpmIn.addEventListener('input',function(){ setBpm(this.value) });
+function preset(kickSteps){ grid.kick=new Array(16).fill(false); kickSteps.forEach(function(s){grid.kick[s]=true}); paint(); }
+document.getElementById('pHouse').addEventListener('click',function(){ LAYERS.forEach(function(L){ grid[L.k]=new Array(16).fill(false); L.steps.forEach(function(s){grid[L.k][s]=true}) }); setBpm(124); setLevel(Math.max(level,5)); document.getElementById('say').innerHTML='<b>하우스 기본.</b> 킥 네 박, 2·4박 클랩, &마다 오픈 하이햇. 124 BPM.'; });
+document.getElementById('pTwo').addEventListener('click',function(){ preset([0,10]); setBpm(132); if(level<3) setLevel(3); document.getElementById('say').innerHTML='<b>킥 자리를 비움.</b> 셋째 박 킥을 빼고 엇박으로 밀었다(132 BPM). 소리는 그대로인데 걸음이 절뚝인다 — 2스텝 쪽으로.'; });
+document.getElementById('pHip').addEventListener('click',function(){ setBpm(92); document.getElementById('say').innerHTML='<b>빠르기만 92.</b> 패턴과 소리는 그대로, 템포만 힙합 쪽으로 내렸다. 아직 하우스로 들리는가?'; });
+paint();
+</script>
+</body>
+</html>

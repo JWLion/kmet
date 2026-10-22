@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><script>/* iPhone 무음 스위치가 켜져 있어도 소리가 나게 */try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}</script><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>힙합 계보</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 한 줄기(하우스)에서 세 갈래 — 소리 / 빠르기 / 자리 — 를 위에서 아래로, 각 갈래마다 16칸 킥 그리드 */
+:root{
+  --bg:#f6f4f2; --paper:#ffffff; --ink:#1d1a19; --mute:#6c6461; --line:#e3ddd9;
+  --red:#d4202a; --sound:#d9461f; --tempo:#c7861a; --place:#6a45c2; --kick:#1d1a19; --cell:#ece7e3;
+  --f-display:"Do Hyeon","IBM Plex Sans KR",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161413; --paper:#201d1c; --ink:#f1ece9; --mute:#a69c97; --line:#35302e;
+  --red:#ff5a5f; --sound:#ff7a52; --tempo:#f0b04a; --place:#a98bf0; --kick:#f1ece9; --cell:#2e2a28; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161413; --paper:#201d1c; --ink:#f1ece9; --mute:#a69c97; --line:#35302e;
+  --red:#ff5a5f; --sound:#ff7a52; --tempo:#f0b04a; --place:#a98bf0; --kick:#f1ece9; --cell:#2e2a28; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px}
+.wrap{max-width:980px;margin:0 auto;display:grid;gap:40px}
+h1,h2,h3{word-break:keep-all;font-family:var(--f-display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+.eyebrow{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+header{display:grid;gap:10px}
+header h1{font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.05}
+header p{margin:0;max-width:62ch;color:var(--mute)}
+.formula{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{font-family:var(--f-mono);font-size:.78rem;padding:4px 10px;border-radius:999px;border:1px solid currentColor}
+.c-sound{color:var(--sound)} .c-tempo{color:var(--tempo)} .c-place{color:var(--place)}
+
+/* 갈래 */
+.lane{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:start}
+.lane-head{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:grid;gap:4px}
+.lane-head .no{font-family:var(--f-mono);font-size:.75rem;color:var(--mute)}
+.lane-head h2{font-size:1.7rem;line-height:1.1}
+.lane-head .verdict{font-size:.82rem;color:var(--mute)}
+.lane[data-k="root"] h2{color:var(--ink)} .lane[data-k="sound"] h2{color:var(--sound)} .lane[data-k="tempo"] h2{color:var(--tempo)} .lane[data-k="place"] h2{color:var(--place)}
+.stack{display:grid;gap:12px;min-width:0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px;min-width:0}
+.card-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px}
+.card h3{font-size:1.35rem;margin-right:auto}
+.meta{font-family:var(--f-mono);font-size:.75rem;color:var(--mute);font-variant-numeric:tabular-nums}
+.card p{margin:0;max-width:66ch}
+.root{border-style:dashed}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 8px;border-radius:4px;color:var(--paper)}
+.lane[data-k="sound"] .tag{background:var(--sound)} .lane[data-k="tempo"] .tag{background:var(--tempo)} .lane[data-k="place"] .tag{background:var(--place)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pair div{border-top:1px solid var(--line);padding-top:8px;font-size:.88rem}
+.pair .k{display:block;font-family:var(--f-mono);font-size:.7rem;letter-spacing:.08em;color:var(--mute);text-transform:uppercase}
+
+/* 16칸 킥 그리드 */
+.grid16{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:3px;max-width:420px}
+.grid16 i{aspect-ratio:1;max-width:100%;border-radius:3px;background:var(--cell)}
+.grid16 i:nth-child(4n+1){outline:1px solid var(--line);outline-offset:-1px}
+.grid16 i.on{background:var(--kick)}
+.grid-cap{font-family:var(--f-mono);font-size:.7rem;color:var(--mute)}
+
+.arrow{font-family:var(--f-mono);font-size:.8rem;color:var(--mute);padding-left:4px}
+
+/* 비교표 */
+section.tables{display:grid;gap:18px}
+section.tables h2{font-size:1.6rem}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:12px 14px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:600}
+td.g{font-weight:700;white-space:nowrap}
+.verdict-cell{font-weight:700}
+.hi{color:var(--sound)}
+.note{font-size:.82rem;color:var(--mute);max-width:72ch;margin:0}
+footer{font-size:.78rem;color:var(--mute);display:grid;gap:4px}
+footer a{color:inherit}
+
+@media (max-width:680px){
+  .lane{grid-template-columns:1fr;gap:12px}
+  .lane-head{position:static}
+  .pair{grid-template-columns:1fr}
+}
+
+/* 듣기 칩 */
+.plays{display:flex;flex-wrap:wrap;gap:8px}
+.play{appearance:none;font:inherit;font-size:.86rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 12px 5px 10px;display:inline-flex;align-items:center;gap:7px;cursor:pointer;position:relative;overflow:hidden;text-align:left}
+.play .ic{font-family:var(--f-mono);font-size:.68rem;color:var(--mute)}
+.play .role{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.06em;color:var(--mute);text-transform:uppercase}
+.play:hover,.play:focus-visible{border-color:var(--ink)}
+.play:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.play.on{border-color:currentColor}
+.lane[data-k="sound"] .play.on{color:var(--sound)} .lane[data-k="tempo"] .play.on{color:var(--tempo)} .lane[data-k="place"] .play.on{color:var(--place)}
+.play.on .ic{color:inherit;animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:.35}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.play.on .ic{animation:none}}
+.play .bar{position:absolute;left:0;bottom:0;height:2px;width:100%;background:currentColor;transform-origin:left;transform:scaleX(0)}
+.play.inl{display:inline;border:0;border-radius:0;padding:0 1px;background:none;font-size:inherit;font-weight:700;color:inherit;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;overflow:visible;gap:0}
+.play.inl .ic{font-size:.6em;margin-right:2px;vertical-align:.15em}
+.play.inl.red,.play.inl.red.on{color:var(--red)}
+.play.inl .bar{bottom:-2px}
+.howto{font-size:.82rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 14px;margin:0}
+.howto b{color:var(--ink);font-weight:600}
+#pop{position:fixed;z-index:50;width:360px;max-width:calc(100vw - 32px);border-radius:10px;overflow:hidden;background:#000;box-shadow:0 14px 36px rgba(0,0,0,.35);pointer-events:none}
+#pop video{display:block;width:100%;height:auto}
+#hint{position:fixed;z-index:51;background:var(--ink);color:var(--bg);font-size:.75rem;padding:5px 9px;border-radius:6px;pointer-events:none}
+
+.lane{--lc:var(--ink)}
+.lane h2{color:var(--lc)}
+.lane .play.on{color:var(--lc)}
+.lane .tag{background:var(--lc)}
+.lane.c1{--lc:#8a5a2b} .lane.c2{--lc:#6a45c2} .lane.c3{--lc:#c7861a} .lane.c4{--lc:#1f6fb0} .lane.c5{--lc:#d9461f} .lane.c6{--lc:#2f8f7a} .lane.c7{--lc:#c2307a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lane.c1{--lc:#d9a06a}:root:not([data-theme="light"]) .lane.c2{--lc:#a98bf0}:root:not([data-theme="light"]) .lane.c4{--lc:#6fb0f0}:root:not([data-theme="light"]) .lane.c5{--lc:#ff7a52}:root:not([data-theme="light"]) .lane.c6{--lc:#5fd0b5}:root:not([data-theme="light"]) .lane.c7{--lc:#f07ab5}}
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:680px){.vs{grid-template-columns:1fr}}
+.flow{font-family:var(--f-mono);font-size:.8rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.flow b{font-family:var(--f-body);font-size:.92rem;color:var(--ink)}
+.quote{border-left:3px solid var(--lc);padding-left:12px;font-size:.95rem}
+
+.docbtn{appearance:none;font:inherit;font-weight:700;font-size:.92rem;cursor:pointer;border:0;border-radius:999px;padding:9px 18px;background:var(--lc);color:#fff;display:inline-flex;gap:10px;align-items:baseline}
+.docbtn.h3btn{background:none;color:inherit;padding:0;font-size:inherit;font-weight:inherit;font-family:inherit;text-align:left;display:inline;line-height:inherit} .docbtn.h3btn:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px} .docbtn.h3btn span{display:inline-block;margin-left:8px;vertical-align:.15em;background:var(--lc);color:#fff;border-radius:999px;padding:2px 10px;font-size:.7rem;opacity:1} .docbtn span{font-family:var(--f-mono);font-size:.72rem;font-weight:400;opacity:.85}
+.docbtn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+#docLayer{position:fixed;inset:0;z-index:60;background:rgba(10,8,8,.8);display:flex;align-items:center;justify-content:center;padding:24px}
+#docLayer[hidden]{display:none}
+#docLayer video{width:min(1100px,100%);max-height:86vh;background:#000;border-radius:10px}
+#docClose{position:absolute;top:16px;right:16px;appearance:none;border:0;cursor:pointer;width:42px;height:42px;border-radius:50%;background:#fff;color:#111;font-size:1.2rem}
+#docRate{position:absolute;top:22px;left:24px;color:#fff;font-family:var(--f-mono);font-size:.8rem}
+
+.era-tabs{display:flex;flex-wrap:wrap;gap:8px}
+.era-tab{appearance:none;font:inherit;cursor:pointer;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:7px 12px;display:grid;gap:0;line-height:1.3}
+.era-tab b{font-family:var(--f-display);font-weight:400;font-size:1.05rem}
+.era-tab span{font-family:var(--f-mono);font-size:.68rem;color:var(--mute)}
+.era-tab.on{border-color:var(--lc);background:var(--lc);color:#fff}
+.era-tab.on span{color:rgba(255,255,255,.85)}
+.era-tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.era video{width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;display:block}
+.era-notes{margin:0;padding-left:18px;font-size:.86rem;color:var(--mute);display:grid;gap:3px}
+.era-notes b{color:var(--ink);font-weight:600;margin-right:4px}
+
+.add{border-left:3px solid var(--lc);padding-left:10px;font-size:.92rem}
+.story{border-top:1px solid var(--line);padding-top:10px}
+.story summary{cursor:pointer;font-weight:700;list-style:none;display:flex;gap:10px;align-items:baseline}
+.story summary::-webkit-details-marker{display:none}
+.story summary span{font-family:var(--f-mono);font-size:.7rem;font-weight:400;color:var(--mute)}
+.story[open] summary span{display:none}
+.story .steps{margin:10px 0 0;padding-left:20px;display:grid;gap:6px;font-size:.92rem;max-width:68ch}
+.tl{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.92rem}
+.tl li{display:grid;grid-template-columns:96px 1fr;gap:12px;border-top:1px solid var(--line);padding-top:8px}
+.tl li span{font-family:var(--f-mono);font-size:.78rem;color:var(--lc);font-weight:600}
+@media (max-width:680px){.tl li{grid-template-columns:1fr;gap:2px}}
+.facts{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.92rem}
+#pop .sub{position:absolute;left:8px;right:8px;bottom:10px;text-align:center;font-family:var(--f-body);font-size:.82rem;line-height:1.4;font-weight:600;color:#fff;text-shadow:0 1px 3px #000,0 0 6px #000;word-break:keep-all}
+#pop .sub:empty{display:none}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">1교시 · 힙합 계열 정리</span>
+    <h1>브레이크에서 트랩까지</h1>
+    <p>파티의 드럼 브레이크를 이어 붙인 데서 시작해, 옛 음반을 잘라 쓰는 샘플링으로 소리를 만들고, 동부·서부·남부가 각자의 소리로 갈라진 흐름.</p>
+    <p class="howto"><span><b>♪ 곡 제목에 마우스를 올리면</b> 핵심 구간이 나옴</span><span>▣ 표시는 영상</span><span>소리가 안 나면 제목을 한 번 클릭</span></p>
+  </header>
+
+  <section class="lane c1">
+    <div class="lane-head"><span class="no">◎ 뿌리</span><h2>흑인 음악의 줄기</h2><span class="verdict">블루스 → R&B → 소울·펑크·디스코</span></div>
+    <div class="stack">
+      <article class="card"><div class="card-top"><h3>미국 남부에서 도시로</h3><span class="meta">미국 · 20세기</span></div><p>남부 흑인들의 블루스에서 R&amp;B가 나오고, 다시 소울·펑크·디스코로 갈라짐. 힙합 DJ들이 이어 붙인 브레이크는 바로 이 펑크·소울 음반 속 드럼 구간이었음.</p><div class="flow"><b>블루스</b>→<b>R&amp;B</b>→<b>소울 · 펑크 · 디스코</b>→<b>힙합</b></div></article></div>
+  </section>
+  <section class="lane c2">
+    <div class="lane-head"><span class="no">① 탄생</span><h2>1973. 8. 11</h2><span class="verdict">브롱크스 · 두 대의 턴테이블</span></div>
+    <div class="stack">
+      <article class="card"><div class="card-top"><h3>1520 Sedgwick Avenue</h3><span class="meta">미국 · 뉴욕 브롱크스 · 1973.8.11</span></div><p>신디 캠벨의 개학 맞이 생일 파티(건물 오락실, 대여료 25달러). 오빠 클라이브 캠벨, 곧 <b>DJ 쿨 허크</b>가 같은 음반 두 장과 턴테이블 두 대, 믹서로 <b>드럼 브레이크만 번갈아 이어 틀었음</b>. 친구 Coke La Rock이 마이크를 잡았음.</p><p class="quote">허크: "1520 Sedgwick은 힙합 문화의 베들레헴이다." · 뉴욕주는 2007년 이 건물을 '힙합의 발상지'로 인정함. 다만 힙합은 1970년대 여러 곳에서 점차 자라났고, 이 파티는 그중 결정적 사건으로 꼽힘.</p><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_kool_herc_merry_go_round.mp4" data-kind="video" data-len="45" data-subs="[[0, 6, &quot;Merry-Go-Round: 파티가 가장 달아오를 때, 브레이크에서 브레이크로 넘어가는 기법&quot;], [6, 10, &quot;레코드에서 쓰는 건 &#x27;브레이크&#x27; — 노래가 빠지고 드럼이 몰아치는 짧은 구간&quot;], [10, 16, &quot;바늘을 올리고, 브레이크가 시작되는 자리를 손으로 맞춰 둠&quot;], [16, 22, &quot;턴테이블 두 대 + 믹서 — 한쪽이 끝나기 전에 다른 쪽을 준비&quot;], [22, 30, &quot;믹서로 소리를 다른 턴테이블로 넘김 → 브레이크가 끊기지 않고 이어짐&quot;], [30, 34, &quot;끝난 쪽 레코드는 다시 처음으로 돌려 다음 차례를 준비&quot;], [34, 38, &quot;이름 뜻: 쉼 없이(no slack) 왔다 갔다 해서 &#x27;회전목마&#x27;&quot;], [38, 42, &quot;이렇게 몇 초짜리 브레이크를 몇 분짜리로 늘림&quot;], [42, 45.5, &quot;늘어난 브레이크에 맞춰 춤춘 사람들 → b-boy·b-girl, &#x27;브레이킹&#x27;&quot;]]"><span class="ic">▣</span>쿨 허크 Merry-Go-Round 시연<span class="role">원조</span></button></div></article></div>
+  </section>
+  <section class="lane c4">
+    <div class="lane-head"><span class="no">② 음반</span><h2>파티에서 음반으로</h2><span class="verdict">파티 랩 → 메시지</span></div>
+    <div class="stack">
+      <article class="card"><div class="card-top"><h3>첫 상업 히트</h3><span class="meta">미국 · 1979</span></div><p>Sugarhill Gang 〈Rapper's Delight〉 — 파티의 랩이 처음으로 음반이 되어 팔림.</p><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_rappers_delight.mp4" data-kind="video" data-len="30" data-subs="[[0, 7, &quot;1979.9.16 발매 · Sugarhill Gang 〈Rapper&#x27;s Delight〉&quot;], [7, 15, &quot;빌보드 핫100 36위 — 랩을 미국 전역에 알린 곡&quot;], [15, 23, &quot;이후 무대의 MC를 점점 &#x27;래퍼(rapper)&#x27;라 부르게 됨&quot;], [23, 31, &quot;MC → 래퍼 · 단, &#x27;rap&#x27;이라는 말은 그 전부터 쓰임&quot;]]"><span class="ic">▣</span>Sugarhill Gang 〈Rapper's Delight〉 1979<span class="role">첫 히트</span></button></div></article>
+      <article class="card"><div class="card-top"><h3>힙합이 메시지를 담다</h3><span class="meta">미국 · 1982</span></div><p>Grandmaster Flash &amp; the Furious Five 〈The Message〉 — 도시 빈민가의 가난과 압박을 그린 초기의 대표적 사회 비판 힙합. 멤버 Melle Mel: "우린 파티 랩에 익숙했다." 이후 DJ보다 MC(래퍼)가 힙합의 중심이 됨. 2002년 힙합 음반 최초로 미국 의회도서관 국가녹음등록부에 오름.</p><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_the_message.mp4" data-kind="video" data-len="30" data-subs="[[0, 7, &quot;1982 · Grandmaster Flash &amp; the Furious Five 〈The Message〉&quot;], [7, 15, &quot;파티 랩이 아니라, 도시 빈민가의 가난과 압박을 그린 곡&quot;], [15, 23, &quot;초기의 대표적 사회 비판 힙합 — 이후 힙합의 중심이 DJ에서 MC(래퍼)로&quot;], [23, 30, &quot;2002년, 힙합 음반 최초로 미국 의회도서관 국가녹음등록부에 오름&quot;]]"><span class="ic">▣</span>〈The Message〉 1982<span class="role">메시지</span></button></div></article></div>
+  </section>
+  <section class="lane c5">
+    <div class="lane-head"><span class="no">③ 갈림</span><h2>동부와 서부</h2><span class="verdict">자리는 비슷, 소리가 갈림</span></div>
+    <div class="stack">
+      <article class="card"><div class="card-top"><h3><button type="button" class="docbtn h3btn" data-src="clips/hiphop_nwa_evidence.mp4" data-rate="1" title="클릭하면 근거 영상 재생">서부의 등장 — N.W.A와 갱스터 랩 <span>▶ 근거 영상 1:34</span></button></h3><span class="meta">미국 · LA 컴턴 · 1987 결성</span></div>
+        <p>힙합이 '뉴욕의 문화'로 여겨지던 때, LA의 빈민가 컴턴에서 N.W.A가 결성됨(Eazy-E, Dr. Dre, Ice Cube, DJ Yella, MC Ren 등). 갱스터 랩의 가장 이른 대표 그룹으로 꼽힘.</p>
+        <details class="story"><summary>왜 컴턴에서 갱스터 랩이 나왔나 <span>펼치기</span></summary>
+          <ol class="steps">
+            <li><b>배경</b> — 1980년대 LA에서는 흑인 갱단 단속이 강화되었고, 그 과정에서 경찰의 무차별 검문과 폭행 등 <b style="color:#d7261e">인종차별</b> 문제가 불거짐. 1991년 로드니 킹이 LA 경찰에게 집단 구타당한 영상은 이 문제를 전국에 드러냄.</li>
+            <li><b>〈Fuck tha Police〉</b> — 《Straight Outta Compton》 수록곡. 경찰의 인종차별을 정면으로 비판함. FBI가 음반사에 항의 편지를 보낼 만큼 논란이 됨. 이후 이 문구는 티셔츠, 시위 구호 등으로 퍼짐.</li>
+            <li><b>공연 중단</b> — 방송에서 소개한 Detroit Free Press 기사에 따르면, 1989년 디트로이트 공연에서 경찰이 N.W.A를 "선동적이고 반경찰·반체제 소재로 공연한다"고 봄.</li>
+            <li><b>결과</b> — 논란과 함께 인기가 치솟았고, 공격적이고 위협적인 서부 힙합의 이미지가 만들어짐.</li>
+          </ol></details>
+      </article><div class="vs">
+      <article class="card"><div class="card-top"><h3>이스트 · 붐뱁</h3><span class="meta">미국 · 뉴욕 · 80년대 말~90년대 초</span></div><p>"붐(킥)-뱁(스네어)"을 흉내 낸 이름. 세게 치는 킥과 짧게 터지는 스네어, 샘플러(E-mu SP-1200, Akai MPC)로 옛 음반을 잘라 씀. 중간 빠르기의 성큼거리는 그루브.</p><p>Nas, Wu-Tang Clan, A Tribe Called Quest, KRS-One 《Return of the Boom Bap》 1993</p>
+          <p class="add"><b>90년대 중반의 동부</b> — 퍼프 대디(Sean Combs)가 1993년 뉴욕에 Bad Boy Records를 세움. 대표 래퍼 The Notorious B.I.G.(〈Juicy〉·〈Big Poppa〉 1994)는 '동부 힙합의 왕'으로 불림. 퍼프 대디의 데뷔 싱글 〈Can't Nobody Hold Me Down〉(1997)은 빌보드 1위.</p><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_ill_be_missing_you.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Puff Daddy 〈I'll Be Missing You〉 feat. Faith Evans &amp; 112 1997<span class="role">추모곡</span></button></div><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_krs_one_return_of_the_boom_bap.mp4" data-kind="video" data-len="30"><span class="ic">▣</span>KRS-One 〈Return of the Boom Bap〉 1993<span class="role">붐뱁</span></button><button type="button" class="play" data-clip="clips/hiphop_sp1200_mpc60.mp4" data-kind="video" data-len="40"><span class="ic">▣</span>SP-1200 vs MPC60 소리 비교<span class="role">샘플러</span></button></div></article>
+      <article class="card"><div class="card-top"><h3>웨스트 · G-funk</h3><span class="meta">미국 · LA · 90년대 초 전성기</span></div><p>gangsta funk. P-Funk 영향의 신시사이저, 높은 신스 멜로디, 깊은 베이스. 샘플은 적고 실제 연주가 많음. 90~100 BPM의 느리고 최면 같은 그루브.</p><p>Dr. Dre 《The Chronic》 1992, Snoop Dogg 〈Gin and Juice〉, Warren G 〈Regulate〉 1994</p>
+          <p class="add"><b>90년대 중반의 서부</b> — N.W.A 출신 Dr. Dre가 1991년 LA에서 Suge Knight 등과 Death Row Records를 공동 설립. Snoop Dogg 《Doggystyle》(1993), 2Pac 〈California Love〉(1995)·〈Changes〉(1998)가 서부를 대표함. 2Pac은 하류층 흑인의 삶을 시적으로 표현한 래퍼로 평가되며, 전 세계 음반 판매량은 7,500만 장 이상으로 집계됨.</p><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_still_dre.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Dr. Dre 〈Still D.R.E.〉 feat. Snoop Dogg 1999<span class="role">웨스트</span></button><button type="button" class="play" data-clip="clips/hiphop_2pac_all_eyez_on_me.mp4" data-kind="video" data-len="30"><span class="ic">▣</span>2Pac 〈All Eyez on Me〉 feat. Big Syke 1996<span class="role">2Pac</span></button></div></article></div>
+      <article class="card"><div class="card-top"><h3>1995 소스 어워드</h3><span class="meta">미국 · 뉴욕 · 1995.8.3</span></div><p>동부 관객이 가득한 시상식에서 Death Row(서부)의 Suge Knight가 Bad Boy(동부)의 Sean Combs를 겨냥한 발언을 하며 동·서부 대립이 크게 격화됨. 이후 2Pac과 The Notorious B.I.G.가 2년 안에 모두 피살됨 — 시상식이 유일한 원인은 아니지만 대립을 키운 계기로 평가됨.</p><div class="plays"><button type="button" class="docbtn" data-src="clips/hiphop_2pac_biggie_beef_core_1.mp4|clips/hiphop_2pac_biggie_beef_core_2.mp4" data-rate="1.25">▶ 2Pac과 비기의 디스전 — 핵심 5분 <span>1.25배속 · 오해의 시작부터 1996년 총격까지</span></button></div></article></div>
+  </section>
+  <section class="lane c6">
+    <div class="lane-head"><span class="no">④ 남부</span><h2>남부의 목소리</h2><span class="verdict">808과 촘촘한 하이햇</span></div>
+    <div class="stack">
+      <article class="card"><div class="card-top"><h3>"The South got somethin' to say!"</h3><span class="meta">미국 · 1995.8.3</span></div><p>1995년 뉴욕 소스 어워드에서 애틀랜타 출신 OutKast가 '올해의 신인 그룹'상을 받았지만, 동부 편이 대부분인 관객이 야유를 보냄. André 3000이 수상 소감에서 "The South got somethin' to say!"(남부도 할 말이 있다!)라고 받아침. 동·서부만 주목받던 힙합에서 남부가 자기 목소리를 내기 시작한 장면으로 평가됨.</p></article>
+      <article class="card"><div class="card-top"><h3>크렁크 → 트랩</h3><span class="meta">미국 · 애틀랜타 · 1990년대 ~ 2000년대</span></div><p>'트랩 하우스'(마약을 파는 집)에서 온 이름. 크렁크의 Lil Jon 등이 초기 소리에 영향. <b>길게 울리는 808 킥·베이스</b>, 두 배·세 배로 쪼갠 <b>하이햇 롤</b>, 반박자(half-time)로 느껴지는 약 140(70) BPM.</p><p>T.I. 《Trap Muzik》 2003 — T.I.는 자신이 트랩을 만들었다고 말하지만, Gucci Mane도 같은 주장을 해 기원은 논쟁 중.</p><div class="plays"><button type="button" class="play" data-clip="clips/hiphop_get_low.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>Lil Jon &amp; the East Side Boyz 〈Get Low〉 feat. Ying Yang Twins 2003<span class="role">크렁크</span></button><button type="button" class="play" data-clip="clips/hiphop_trap_muzik.mp3" data-kind="audio" data-len="30"><span class="ic">♪</span>T.I. 〈Trap Muzik〉 feat. Mac Boney 2003<span class="role">트랩</span></button></div></article></div>
+  </section>
+  <section class="lane c3">
+    <div class="lane-head"><span class="no">⑤ 2000년대</span><h2>에미넴</h2><span class="verdict">흑인 음악의 제왕이 된 백인 래퍼</span></div>
+    <div class="stack">
+      <article class="card"><div class="card-top"><h3>디트로이트에서 정상까지</h3><span class="meta">미국 · 디트로이트 · 1999 ~</span></div>
+        <p>디트로이트 빈민가에서 자람. 백인이라는 이유로 "네까짓 게 뭔 랩이냐"는 무시를 받음(1999 롤링스톤 인터뷰). Dr. Dre가 그의 음반을 듣고 1998년 Aftermath와 계약하며 데뷔를 이끎.</p>
+        <ul class="facts">
+          <li>《The Slim Shady LP》(1999) — 메이저 데뷔, 그래미 베스트 랩 앨범</li>
+          <li>〈Lose Yourself〉(2002) — 자전적 영화 《8 Mile》 주제곡, 빌보드 핫100 12주 연속 1위, 랩 곡 최초 아카데미 주제가상</li>
+          <li>〈Without Me〉(2002) · 그래미 통산 15회 수상 · 빌보드 선정 '2000년대의 아티스트'</li>
+          <li>2022년 슈퍼볼 하프타임쇼 — Dr. Dre, Snoop Dogg, Kendrick Lamar, Mary J. Blige와 함께 무대에 섬</li>
+        </ul>
+        <p class="quote">해석 — 가난과 차별을 겪은 에미넴에게 흑인 래퍼들이 동질감을 느꼈다는 점이 그가 받아들여진 이유로 꼽힘. Dr. Dre: "에미넴은 피부색만 하얀 흑인"(방송 인용).</p>
+      </article></div>
+  </section>
+  <footer>
+    <span>출처: Wikipedia — <a href="https://en.wikipedia.org/wiki/1520_Sedgwick_Avenue" target="_blank" rel="noopener">1520 Sedgwick Avenue</a> · <a href="https://en.wikipedia.org/wiki/Breakbeat" target="_blank" rel="noopener">Breakbeat</a> · <a href="https://en.wikipedia.org/wiki/Boom_bap" target="_blank" rel="noopener">Boom bap</a> · <a href="https://en.wikipedia.org/wiki/G-funk" target="_blank" rel="noopener">G-funk</a> · <a href="https://en.wikipedia.org/wiki/The_Message_(Grandmaster_Flash_and_the_Furious_Five_song)" target="_blank" rel="noopener">The Message</a> · <a href="https://en.wikipedia.org/wiki/1995_Source_Awards" target="_blank" rel="noopener">1995 Source Awards</a> · <a href="https://en.wikipedia.org/wiki/Trap_music" target="_blank" rel="noopener">Trap music</a> · <a href="https://en.wikipedia.org/wiki/N.W.A" target="_blank" rel="noopener">N.W.A</a> · <a href="https://en.wikipedia.org/wiki/Fuck_tha_Police" target="_blank" rel="noopener">Fuck tha Police</a> · <a href="https://en.wikipedia.org/wiki/East_Coast%E2%80%93West_Coast_hip-hop_rivalry" target="_blank" rel="noopener">East–West rivalry</a> · <a href="https://en.wikipedia.org/wiki/Murder_of_Tupac_Shakur" target="_blank" rel="noopener">Murder of Tupac Shakur</a> · <a href="https://en.wikipedia.org/wiki/Eminem" target="_blank" rel="noopener">Eminem</a> · <a href="https://en.wikipedia.org/wiki/Lose_Yourself" target="_blank" rel="noopener">Lose Yourself</a> · <a href="https://en.wikipedia.org/wiki/Get_Low_(Lil_Jon_%26_the_East_Side_Boyz_song)" target="_blank" rel="noopener">Get Low</a> · <a href="https://en.wikipedia.org/wiki/Trap_Muzik" target="_blank" rel="noopener">Trap Muzik</a></span>
+    <span>방송: tvN 〈벌거벗은 세계사〉 미국 힙합 편(동부 vs 서부 디스전) — 배경 설명과 인용 일부</span>
+  </footer>
+</div>
+<div id="pop" hidden></div><div id="hint" hidden>한 번 클릭하면 소리가 나옵니다</div>
+<script>
+(function(){
+  var pop=document.getElementById('pop'),hint=document.getElementById('hint'),cur=null,m=null,t=null;
+  function stop(){ if(m){try{m.pause()}catch(e){} m.remove();} m=null; pop.hidden=true; hint.hidden=true;
+    if(cur){cur.classList.remove('on'); var b=cur.querySelector('.bar'); if(b) b.remove();} cur=null; clearInterval(t); }
+  function place(el){ var r=el.getBoundingClientRect(),w=pop.offsetWidth||360,h=pop.offsetHeight||203;
+    pop.style.left=Math.min(Math.max(16,r.left),innerWidth-w-16)+'px'; var y=r.top-h-10; pop.style.top=(y<12?r.bottom+10:y)+'px'; }
+  var t0=0; function start(el){ if(cur===el) return; stop(); cur=el; t0=Date.now(); var len=+el.dataset.len||30;
+    m=document.createElement(el.dataset.kind==='video'?'video':'audio'); m.src=el.dataset.clip; m.preload='auto'; m.playsInline=true;
+    if(el.dataset.kind==='video'){ pop.style.width=''; pop.appendChild(m); var sb=pop.querySelector('.sub'); if(sb) sb.remove(); if(el.dataset.subs){ var subs=JSON.parse(el.dataset.subs); sb=document.createElement('div'); sb.className='sub'; pop.appendChild(sb); m.addEventListener('timeupdate',function(){ var t=m.currentTime,txt=''; for(var k=0;k<subs.length;k++){ if(t>=subs[k][0]&&t<subs[k][1]){txt=subs[k][2];break;} } if(sb.textContent!==txt) sb.textContent=txt; }); } pop.hidden=false; place(el); m.addEventListener('loadedmetadata',function(){ pop.style.width=m.videoHeight>m.videoWidth?'240px':''; place(el); }); }
+    var bar=document.createElement('span'); bar.className='bar'; el.appendChild(bar); el.classList.add('on');
+    var p=m.play(); if(p&&p.catch) p.catch(function(){ var r=el.getBoundingClientRect(); hint.style.left=Math.max(16,r.left)+'px'; hint.style.top=(r.bottom+6)+'px'; hint.hidden=false; });
+    t=setInterval(function(){ if(!m) return; bar.style.transform='scaleX('+Math.min(1,m.currentTime/len)+')'; if(m.currentTime>=len||m.ended) stop(); },100); }
+  document.querySelectorAll('.play').forEach(function(el){
+    el.addEventListener('mouseenter',function(){start(el)});
+    var lt=0; el.addEventListener('touchstart',function(){lt=Date.now();},{passive:true}); el.addEventListener('mouseleave',function(){ if(Date.now()-lt<2000) return; stop(); });
+    el.addEventListener('click',function(){ if(cur===el&&m&&Date.now()-t0<700){ if(m.paused){ var q=m.play(); if(q&&q.catch) q.catch(function(){}); } return; } if(cur===el&&m){ if(m.paused){hint.hidden=true; m.play();} else stop(); } else start(el); });
+    el.addEventListener('blur',function(){ if(cur===el) stop(); });
+  });
+})();
+</script>
+<div id="docLayer" hidden role="dialog" aria-modal="true" aria-label="영상"><span id="docRate"></span><button type="button" id="docClose" aria-label="닫기">✕</button><video id="docVideo" controls playsinline preload="metadata"></video></div>
+<script>
+(function(){
+  var L=document.getElementById('docLayer'),V=document.getElementById('docVideo'),R=document.getElementById('docRate'),rate=1;
+  var Q=[],qi=0; V.addEventListener('ended',function(){ if(qi<Q.length-1){ qi++; V.src=Q[qi]; V.playbackRate=rate; var pp=V.play(); if(pp&&pp.catch) pp.catch(function(){}); } }); function open(b){ rate=+b.dataset.rate||1; Q=b.dataset.src.split('|'); qi=0; V.src=Q[0]; V.currentTime=0; V.defaultPlaybackRate=rate; V.playbackRate=rate; R.textContent=rate+'배속'; L.hidden=false; var p=V.play(); if(p&&p.catch) p.catch(function(){}); }
+  V.addEventListener('loadedmetadata',function(){ V.playbackRate=rate; });
+  V.addEventListener('play',function(){ if(V.playbackRate!==rate&&V.currentTime<0.5) V.playbackRate=rate; });
+  V.addEventListener('ratechange',function(){ R.textContent=V.playbackRate+'배속'; });
+  function close(){ V.pause(); V.removeAttribute('src'); V.load(); L.hidden=true; }
+  document.querySelectorAll('.docbtn').forEach(function(b){ b.addEventListener('click',function(){open(b)}); });
+  document.getElementById('docClose').addEventListener('click',close);
+  L.addEventListener('click',function(e){ if(e.target===L) close(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!L.hidden) close(); });
+})();
+</script>
+
+<script>
+(function(){
+  var V=document.getElementById('eraVideo'); if(!V) return;
+  document.querySelectorAll('.era-tab').forEach(function(b){ b.addEventListener('click',function(){
+    document.querySelectorAll('.era-tab').forEach(function(x){x.classList.toggle('on',x===b)});
+    V.src=b.dataset.src; var p=V.play(); if(p&&p.catch) p.catch(function(){});
+  }); });
+})();
+</script>
+</body></html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><script>/* iPhone 무음 스위치가 켜져 있어도 소리가 나게 */try{if(navigator.audioSession)navigator.audioSession.type="playback"}catch(e){}</script><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>펑크(Funk)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#f6f4f2;--paper:#fff;--ink:#1d1a19;--mute:#6c6461;--line:#e3ddd9;--acc:#c2541e;
+--f-d:"Do Hyeon","IBM Plex Sans KR",system-ui,sans-serif;--f-b:"IBM Plex Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;--f-m:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161413;--paper:#201d1c;--ink:#f1ece9;--mute:#a69c97;--line:#35302e;--acc:#f0874f}}
+:root[data-theme="dark"]{--bg:#161413;--paper:#201d1c;--ink:#f1ece9;--mute:#a69c97;--line:#35302e;--acc:#f0874f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-b);font-size:15px;line-height:1.65;padding:32px 16px 48px}
+.wrap{max-width:860px;margin:0 auto;display:grid;gap:18px}
+.eb{font-family:var(--f-m);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+h1{font-family:var(--f-d);font-weight:400;font-size:clamp(2rem,5vw,2.8rem);margin:4px 0 0;line-height:1.1}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;gap:12px}
+.rows{display:grid;grid-template-columns:5.5em 1fr;gap:10px 14px}
+.k{font-family:var(--f-m);font-size:.75rem;color:var(--acc);padding-top:3px}
+.v{margin:0}
+.v ul{margin:0;padding-left:18px;display:grid;gap:3px}
+video{width:100%;border-radius:10px;background:#000;display:block}
+.cap{font-size:.85rem;color:var(--mute);margin:0}
+.link{border-left:3px solid var(--acc);padding-left:12px;margin:0;font-size:.95rem}
+@media(max-width:560px){.rows{grid-template-columns:1fr}.k{padding:0}}
+</style></head><body>
+<div class="wrap">
+  <div><span class="eb">Funk · 1960년대 중반 · 미국</span><h1>펑크(Funk)</h1></div>
+  <div class="card"><div class="rows">
+    <div class="k">기원</div><p class="v">1960년대 중반, 미국 흑인 커뮤니티에서 <b>소울·재즈·R&amp;B·가스펠</b>이 섞여 생긴 장르. 멜로디나 화성보다 <b>몸을 움직이게 하는 리듬(그루브)</b>이 중심.</p>
+    <div class="k">특징</div><div class="v"><ul>
+      <li>당시 대중음악보다 <b>느린 템포</b>, 16분음표로 잘게 쪼갠 그루브</li>
+      <li><b>강한 첫 박 — "On the one!"</b>: 소울의 2·4박 백비트 대신 첫 박에 무게를 둠</li>
+      <li>당김음(싱코페이션)이 많은 <b>전기 베이스 라인</b></li>
+      <li>줄을 짧게 긁어 타악기처럼 쓰는 <b>'치킨 스크래치' 리듬 기타</b>, 짧게 끊는 관악기</li>
+    </ul></div>
+    <div class="k">대표 인물</div><p class="v"><b>제임스 브라운(James Brown)</b> — 첫 박 중심의 그루브를 만든 사람. 이후 Sly and the Family Stone, Parliament-Funkadelic(조지 클린턴)이 1970년대에 넓힘.</p>
+  </div></div>
+  <div class="card">
+    <video controls playsinline preload="metadata" src="clips/funk_james_brown_sex_machine.mp4"></video>
+    <p class="cap">James Brown 〈Get Up (I Feel Like Being a) Sex Machine〉(1970) — 1971년 공연 영상 중 30초. 베이스 Bootsy Collins, 기타 Catfish Collins. 빌보드 소울 차트 2위.</p>
+    <p class="link"><b>힙합과의 연결</b> — 제임스 브라운은 힙합 역사에서 가장 많이 샘플링된 아티스트로 꼽힘. 쿨 허크가 이어 붙인 '드럼 브레이크'가 바로 이런 펑크·소울 음반 속 구간.</p>
+  </div>
+</div>
+</body></html>
